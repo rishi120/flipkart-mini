@@ -1,0 +1,36 @@
+@use '../../assets/font/font';
+@use '../../assets/variables/variables';
+
+.AvatarLabel {
+    display: flex;
+    align-items: center;
+
+    .email {
+        font-size: 2px;
+    }
+}
+
+.InputLabelComponent {
+    font-size: 14px;
+    line-height: 20px;
+    color: #313232;
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-family: font.$Montserrat;
+
+    span {
+        color: #ff4747;
+    }
+}
+
+.SearchableDropDown {
+    width: 100%;
+}
+
+.errorText {
+    font-size: 12px;
+    line-height: 16px;
+    color: #ff4747;
+    font-family: font.$Montserrat;
+    margin: 4px 0 0;
+}

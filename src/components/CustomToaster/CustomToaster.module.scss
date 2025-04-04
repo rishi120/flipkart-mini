@@ -1,0 +1,26 @@
+@use '../../assets/font/font';
+@use '../../assets/variables/variables.scss';
+
+.msgContainer {
+    display: flex;
+    width: 100%;
+    align-items: center;
+
+    .msgTitle {
+        font-family: font.$Montserrat;
+        font-weight: 600;
+        margin: 0;
+        padding-right: 5px;
+        font-size: 15px;
+    }
+
+    .msgDescription {
+        @extend .msgTitle;
+        font-weight: 500;
+        color: variables.$nuetral6;
+    }
+}
+
+.Toastify__close-button {
+    top: 20px !important;
+}
