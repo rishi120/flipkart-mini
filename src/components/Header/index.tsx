@@ -10,7 +10,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 const Header = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -18,6 +18,7 @@ const Header = () => {
 
   console.log(userDetails, "==== userDetails");
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleModalOpen = () => {
     setModalOpen(true);
@@ -37,9 +38,24 @@ const Header = () => {
   };
 
   const menuItems: MenuItem[] = [
-    { label: "Products", path: "/products", icon: <Inventory2Icon /> },
-    { label: "Profile", path: "/profile", icon: <AccountBoxIcon /> },
-    { label: "Cart", path: "/cart", icon: <ShoppingCartIcon /> },
+    {
+      label: "Products",
+      path: "/products",
+      icon: <Inventory2Icon />,
+      onClick: () => navigate("/products"),
+    },
+    {
+      label: "Profile",
+      path: "/profile",
+      icon: <AccountBoxIcon />,
+      onClick: () => navigate("/profile"),
+    },
+    {
+      label: "Cart",
+      path: "/cart",
+      icon: <ShoppingCartIcon />,
+      onClick: () => navigate("/cart"),
+    },
     {
       label: "Logout",
       path: "#",
