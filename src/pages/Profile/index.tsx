@@ -3,7 +3,7 @@ import Profile from "./Profile";
 
 const ProfileWrapper = () => {
   return (
-    <ModuleWrapper>
+    <ModuleWrapper moduleHeading="Profile">
       <Profile />
     </ModuleWrapper>
   );

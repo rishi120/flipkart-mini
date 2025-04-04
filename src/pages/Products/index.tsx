@@ -3,7 +3,11 @@ import ModuleWrapper from "../../layouts/ModuleWrapper";
 
 const ProductsWrapper = () => {
   return (
-    <ModuleWrapper>
+    <ModuleWrapper
+      moduleHeading="Products"
+      showBtn={true}
+      buttonText="Add Products"
+    >
       <Products />
     </ModuleWrapper>
   );

@@ -3,7 +3,7 @@ import Cart from "./Cart";
 
 const CartWrapper = () => {
   return (
-    <ModuleWrapper>
+    <ModuleWrapper moduleHeading="My Cart">
       <Cart />
     </ModuleWrapper>
   );

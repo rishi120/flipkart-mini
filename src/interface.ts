@@ -4,6 +4,13 @@ export interface ChildrenPropsI {
   children: ReactNode;
 }
 
+export interface ModuleWrapperI {
+  moduleHeading: string;
+  children: ReactNode;
+  buttonText?: string;
+  showBtn?: boolean;
+}
+
 export interface ButtonInterfaceI {
   btnWidth?: string;
   btnHeight?: string;
