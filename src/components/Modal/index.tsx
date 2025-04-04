@@ -54,6 +54,7 @@ const CustomModal = ({
             btnBorder="primary2"
             textColor="primary2"
             disabled={isLoading}
+            onClick={handleClose}
           >
             Cancel
           </CustomButton>
