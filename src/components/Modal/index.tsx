@@ -1,0 +1,73 @@
+import { Box, Typography, Stack } from "@mui/material";
+import Modal from "@mui/material/Modal";
+import CustomButton from "../Button";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { CustomModalI } from "../../interface";
+import "./Modal.scss";
+import Loader from "../Loader";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  borderRadius: 2,
+  p: 4,
+};
+
+const CustomModal = ({
+  modalHeading,
+  open,
+  handleClose,
+  modalParagraph,
+  buttonLabel,
+  handleModalClose,
+  isLoading,
+}: CustomModalI) => {
+  return (
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style} className="modalWrapper">
+        <Typography id="modal-modal-title" variant="h6" component="h2">
+          <ErrorOutlineIcon />
+          {modalHeading}
+        </Typography>
+        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+          {modalParagraph}
+        </Typography>
+        <Stack
+          direction="row"
+          spacing={2}
+          display="flex"
+          justifyContent="flex-end"
+        >
+          <CustomButton
+            variant="outlined"
+            color="primary"
+            btnBorder="primary2"
+            textColor="primary2"
+            disabled={isLoading}
+          >
+            Cancel
+          </CustomButton>
+          <CustomButton
+            variant="contained"
+            color="primary2"
+            onClick={handleModalClose}
+          >
+            {isLoading ? <Loader type="button" /> : buttonLabel}
+          </CustomButton>
+        </Stack>
+      </Box>
+    </Modal>
+  );
+};
+
+export default CustomModal;

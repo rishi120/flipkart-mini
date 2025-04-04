@@ -1,0 +1,81 @@
+@use '../../assets/font/font';
+@use '../../assets/variables/variables';
+
+.text-input-wrapper {
+    width: 100%;
+    padding-bottom: 30px;
+
+    .input-label {
+        font-size: 14px;
+        line-height: 20px;
+        color: #313232;
+        font-weight: 600;
+        margin-bottom: 5px;
+        font-family: font.$Montserrat;
+
+        span {
+            color: #ff4747;
+        }
+    }
+
+    .custom-textfield {
+        outline: none;
+
+        .MuiOutlinedInput-root {
+            fieldset {
+                border: none; // Default border color
+            }
+
+            // &:hover fieldset {
+            //   border-color: #a81972; // Border color on hover
+            // }
+
+            // &.Mui-focused fieldset {
+            //   border-color: #a81972; // Border color on focus
+            // }
+        }
+
+        .MuiInputBase-root {
+            width: auto;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+
+            input {
+                padding: 0 0 1px;
+
+            }
+
+            &:focus-within {
+                border-color: #a81972;
+                border-width: 2px;
+            }
+
+            &:hover {
+                border-color: #a81972;
+            }
+        }
+
+        .Mui-disabled {
+            background-color: #ebf0f0;
+        }
+
+        .MuiOutlinedInput-notchedOutline {
+            border-width: 0;
+        }
+
+        .MuiInputBase-input {
+            padding: 8px; // Ensuring proper padding inside the input
+        }
+    }
+
+    .error-text {
+        font-size: 12px;
+        line-height: 16px;
+        color: #ff4747;
+        font-family: font.$Montserrat;
+        margin-top: 4px;
+    }
+}

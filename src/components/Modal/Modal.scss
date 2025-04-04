@@ -1,0 +1,23 @@
+@use "../../assets/Font/Font.scss";
+@use "../../assets/Variables/Variables.scss";
+
+
+
+.modalWrapper h2 {
+    display: flex;
+    align-items: center;
+    font-family: Font.$Montserrat;
+    color: Variables.$secondary2;
+    font-weight: 600;
+
+    svg {
+        color: Variables.$error2;
+        padding-right: 10px;
+    }
+}
+
+.modalWrapper p {
+    font-family: Font.$Montserrat;
+    font-size: 15px;
+    padding-bottom: 20px;
+}

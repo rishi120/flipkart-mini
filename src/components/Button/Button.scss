@@ -1,0 +1,17 @@
+@use '../../assets/font/font';
+@use '../../assets/variables/variables';
+
+.btnCustomStyles {
+    font-family: font.$Montserrat !important;
+    text-transform: none !important;
+
+    &:focus {
+        outline: 0;
+    }
+
+    &:hover {
+        background-color: variables.$primary2 !important;
+        color: variables.$nuetral1;
+        border: none;
+    }
+}
