@@ -82,7 +82,6 @@ const useAuth = () => {
       navigate("/products");
     },
     onError: (error: Record<string, any>) => {
-      console.log(error, "==== error");
       const errorMessage = error?.response?.data?.message;
       handleErrorCodes(errorMessage);
     },
@@ -98,8 +97,9 @@ const useAuth = () => {
       onSuccess: (_data) => {
         showSuccessMessage("User registered successfully", "registration");
       },
-      onError: (err) => {
-        console.error(err, "==== error");
+      onError: (error: any) => {
+        const errorMessage = error?.response?.data?.message;
+        handleErrorCodes(errorMessage);
       },
     });
 
