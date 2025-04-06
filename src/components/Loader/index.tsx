@@ -7,13 +7,13 @@ interface LoaderProps {
   type?: "section" | "table" | "button";
   color?: CircularProgressProps["color"];
   size?: number;
-  loaderText?: string;
+  text?: string;
 }
 const Loader = ({
   type = "table",
   color = "inherit",
   size,
-  loaderText,
+  text,
 }: LoaderProps) => {
   if (type === "section") {
     return (
@@ -28,7 +28,7 @@ const Loader = ({
         }}
       >
         <CircularProgress color={color} size={size} />
-        <p>{loaderText}</p>
+        <p>{text}</p>
       </Box>
     );
   }

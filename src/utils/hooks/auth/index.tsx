@@ -1,20 +1,20 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import { ChildrenPropsI } from "../../../interface";
-import { useMutation } from "@tanstack/react-query";
-import { Login, Registration } from "../../controllers/Auth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Login, Registration, Logout } from "../../controllers/Auth";
 import { handleErrorCodes, showSuccessMessage } from "../../utilities/Helper";
 import { useNavigate } from "react-router";
 import { jwtDecode, InvalidTokenError, JwtPayload } from "jwt-decode";
-import Cookies from "universal-cookie";
-const cookies = new Cookies();
 import {
   getStorageValue,
   setStorageValue,
+  clearData,
 } from "../../../pages/LoginAndRegistration/Cookies";
 import axios from "axios";
 
 interface AuthContextI {
-  welcome: string;
+  storeAccessToken: string;
+  setStoreAccessToken: () => React.Dispatch<React.SetStateAction<string>>;
 }
 
 const createContextAuthContext = createContext<AuthContextI | any>(null);
@@ -26,6 +26,7 @@ const useAuth = () => {
   );
   const [userDetails, setUserDetails] = useState<Record<string, string>>({});
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   /**
    * function to decode the access token and store the id, username and role in the respective state
@@ -103,11 +104,24 @@ const useAuth = () => {
       },
     });
 
-  const Logout = () => {
-    setStoreAccessToken("");
-    cookies.remove("access_token", { path: "/" });
-    cookies.remove("refresh_token", { path: "/" });
-    localStorage.removeItem("userDetails");
+  const { mutate: mutateLogout, isPending: isUserLoggedOut } = useMutation({
+    mutationFn: Logout,
+    onSuccess: (data: Record<string, any>) => {
+      showSuccessMessage(data?.data?.message, "logout");
+      setStoreAccessToken("");
+      clearData();
+      navigate("/");
+      queryClient.clear();
+      axios.defaults.headers.common.Authorization = "";
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message;
+      handleErrorCodes(errorMessage);
+    },
+  });
+
+  const userLogout = () => {
+    return mutateLogout();
   };
 
   const handleLogin = (data: Record<string, string>) => {
@@ -134,7 +148,8 @@ const useAuth = () => {
     userDetails,
 
     // for logout
-    Logout,
+    userLogout,
+    isUserLoggedOut,
   };
 };
 

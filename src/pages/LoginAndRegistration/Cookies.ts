@@ -50,7 +50,8 @@ export const getStorageValue = (key: string) => {
  * Clears session storage and removes authentication-related cookies.
  * Used during logout to clear stored tokens.
  */
-// export const clearData = () => {
-//   cookies.remove("access_token", { path: "/" });
-//   cookies.remove("refresh_token", { path: "/" });
-// };
+export const clearData = () => {
+  cookies.remove("access_token", { path: "/" });
+  cookies.remove("refresh_token", { path: "/" });
+  localStorage.removeItem("userDetails");
+};

@@ -10,6 +10,16 @@ export const Login = (data: Record<string, string>) => {
 };
 
 /**
+ *
+ * logout api
+ * @returns
+ */
+
+export const Logout = () => {
+  return postApi("users/logout", null);
+};
+
+/**
  * for registration
  */
 

@@ -34,3 +34,20 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+/* WebKit Browsers (Chrome, Edge, Safari) */
+&::-webkit-scrollbar {
+  width: 8px;
+  /* Width of the scrollbar */
+}
+
+&::-webkit-scrollbar-track {
+  background-color: white;
+  /* Track color */
+}
+
+&::-webkit-scrollbar-thumb {
+  background-color: #803667;
+  /* Thumb color */
+  /* Rounded edges for thumb */
+}

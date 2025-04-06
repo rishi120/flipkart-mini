@@ -1,11 +1,14 @@
 import Products from "./Products";
 import ModuleWrapper from "../../layouts/ModuleWrapper";
+import { useAuthContext } from "../../utils/hooks";
 
 const ProductsWrapper = () => {
+  const { userDetails } = useAuthContext();
+
   return (
     <ModuleWrapper
       moduleHeading="Products"
-      showBtn={true}
+      showModuleBtn={userDetails?.role === "ADMIN"}
       buttonText="Add Products"
     >
       <Products />

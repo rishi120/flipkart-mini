@@ -14,9 +14,8 @@ import { useLocation, useNavigate } from "react-router";
 
 const Header = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const { userDetails, Logout, isLogoutLoading } = useAuthContext();
+  const { userLogout, isUserLoggedOut } = useAuthContext();
 
-  console.log(userDetails, "==== userDetails");
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -27,7 +26,7 @@ const Header = () => {
     setModalOpen(false);
   };
   const handleUserLogout = () => {
-    return Logout();
+    return userLogout();
   };
 
   type MenuItem = {
@@ -92,14 +91,14 @@ const Header = () => {
         </Stack>
       </div>
       <CustomModal
-        modalHeading="Logout Confirmation"
-        modalParagraph=" Are you sure you want to logout? Logging out means you will no longer receive
+        heading="Logout Confirmation"
+        description=" Are you sure you want to logout? Logging out means you will no longer receive
           notifications."
-        buttonLabel="Logout"
+        label="Logout"
         handleClose={handleModalClose}
         open={modalOpen}
-        handleModalClose={handleUserLogout}
-        isLoading={isLogoutLoading}
+        onBtnClick={handleUserLogout}
+        isLoading={isUserLoggedOut}
       />
     </header>
   );

@@ -19,12 +19,12 @@ const style = {
 };
 
 const CustomModal = ({
-  modalHeading,
+  heading,
   open,
   handleClose,
-  modalParagraph,
-  buttonLabel,
-  handleModalClose,
+  description,
+  label,
+  onBtnClick,
   isLoading,
 }: CustomModalI) => {
   return (
@@ -37,10 +37,10 @@ const CustomModal = ({
       <Box sx={style} className="modalWrapper">
         <Typography id="modal-modal-title" variant="h6" component="h2">
           <ErrorOutlineIcon />
-          {modalHeading}
+          {heading}
         </Typography>
         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          {modalParagraph}
+          {description}
         </Typography>
         <Stack
           direction="row"
@@ -61,9 +61,9 @@ const CustomModal = ({
           <CustomButton
             variant="contained"
             color="primary2"
-            onClick={handleModalClose}
+            onClick={onBtnClick}
           >
-            {isLoading ? <Loader type="button" /> : buttonLabel}
+            {isLoading ? <Loader type="button" /> : label}
           </CustomButton>
         </Stack>
       </Box>

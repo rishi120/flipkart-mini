@@ -1,3 +1,4 @@
+import { useState } from "react";
 import CustomButton from "../../../components/Button";
 import { IFormInput } from "../../../interface";
 import Loader from "../../../components/Loader";
@@ -6,9 +7,13 @@ import { useForm, Controller } from "react-hook-form";
 import { SearchableDropDown } from "../../../components/SearchableDropdown";
 import { Box } from "@mui/material";
 import { useAuthContext } from "../../../utils/hooks";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { formFieldRegex } from "../../../utils/utilities/Helper";
 
 export const Registration = () => {
   const { handleRegistration, isRegistrationLoading } = useAuthContext();
+  const [inputType, setInputType] = useState("password");
 
   const { handleSubmit, reset, control } = useForm<IFormInput>();
 
@@ -43,6 +48,10 @@ export const Registration = () => {
     },
   ];
 
+  const togglePasswordVisibility = () => {
+    setInputType((prevType) => (prevType === "password" ? "text" : "password"));
+  };
+
   return (
     <>
       <h1>Sign Up</h1>
@@ -50,7 +59,13 @@ export const Registration = () => {
         <Controller
           control={control}
           name="email"
-          rules={{ required: "Email is required" }}
+          rules={{
+            required: "Email is required",
+            pattern: {
+              value: formFieldRegex.email,
+              message: "Invalid email address",
+            },
+          }}
           render={({ field, fieldState: { error } }) => (
             <TextInput
               {...field}
@@ -75,24 +90,37 @@ export const Registration = () => {
           name="password"
           rules={{
             required: "Password is required",
-            // pattern: {
-            //   value:
-            //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-            //   message:
-            //     "Password must be at least 8 characters long, and must contain at least one uppercase letter, one lowercase letter, one digit, and one special character",
-            // },
+            pattern: {
+              value: formFieldRegex.password,
+              message:
+                "Password must be at least 8 characters long, and must contain at least one uppercase letter, one lowercase letter, one digit, and one special character",
+            },
           }}
           render={({ field, fieldState: { error } }) => (
             <TextInput
               {...field}
+              name="password"
               error={!!error}
               placeholder="Enter Password"
               helperText={error ? error.message : null}
-              type="password"
+              type={inputType}
               variant="outlined"
               //   className={styles.textField}
               required
               label="Password"
+              postContent={
+                inputType === "password" ? (
+                  <VisibilityIcon
+                    sx={{ cursor: "pointer" }}
+                    onClick={togglePasswordVisibility}
+                  />
+                ) : (
+                  <VisibilityOffIcon
+                    sx={{ cursor: "pointer" }}
+                    onClick={togglePasswordVisibility}
+                  />
+                )
+              }
             />
           )}
         />

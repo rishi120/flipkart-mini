@@ -1,16 +1,21 @@
 import ContextContainer from "./context";
 import AppRoutes from "./routes/Routes";
-import { BrowserRouter as Router } from "react-router";
+import { BrowserRouter } from "react-router";
 import { ToastContainer } from "react-toastify";
+import { TOASTER_AUTO_CLOSE } from "./constants";
+import { TOASTER_POSITION } from "./enums";
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <ContextContainer>
-        <ToastContainer autoClose={2000} position="top-center" />
+        <ToastContainer
+          autoClose={TOASTER_AUTO_CLOSE.autoClose}
+          position={TOASTER_POSITION["TOP_CENTER"]}
+        />
         <AppRoutes />
       </ContextContainer>
-    </Router>
+    </BrowserRouter>
   );
 }
 

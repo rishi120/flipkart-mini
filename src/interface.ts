@@ -8,7 +8,7 @@ export interface ModuleWrapperI {
   moduleHeading: string;
   children: ReactNode;
   buttonText?: string;
-  showBtn?: boolean;
+  showModuleBtn?: boolean;
 }
 
 export interface ButtonInterfaceI {
@@ -60,11 +60,15 @@ export interface SelectDropdownI {
 }
 
 export interface CustomModalI {
-  modalHeading: string;
+  heading: string;
   open: boolean;
   handleClose: () => void;
-  modalParagraph: string;
-  buttonLabel: string;
-  handleModalClose: () => void;
+  description: string;
+  label: string;
+  onBtnClick: () => void;
+  isLoading: boolean;
+}
+
+export interface LoaderOverlayI {
   isLoading: boolean;
 }

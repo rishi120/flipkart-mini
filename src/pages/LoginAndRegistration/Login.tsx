@@ -1,3 +1,4 @@
+import { useState } from "react";
 import CustomButton from "../../components/Button";
 import { useAuthContext } from "../../utils/hooks";
 import Loader from "../../components/Loader";
@@ -7,9 +8,13 @@ import { IFormInput } from "../../interface";
 import styles from "./LoginAndRegistration.module.scss";
 import Registration from "./Registration/Registration";
 import TextInput from "../../components/TextInput/TextInput";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { formFieldRegex } from "../../utils/utilities/Helper";
 
 const Login = () => {
   const { handleLogin, isLoginLoading } = useAuthContext();
+  const [inputType, setInputType] = useState("password");
 
   const { handleSubmit, reset, control } = useForm<IFormInput>();
 
@@ -24,6 +29,10 @@ const Login = () => {
       password: "",
       userName: "",
     });
+  };
+
+  const togglePasswordVisibility = () => {
+    setInputType((prevType) => (prevType === "password" ? "text" : "password"));
   };
 
   return (
@@ -62,7 +71,14 @@ const Login = () => {
               <Controller
                 control={control}
                 name="password"
-                rules={{ required: "Password is required" }}
+                rules={{
+                  required: "Password is required",
+                  pattern: {
+                    value: formFieldRegex.password,
+                    message:
+                      "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+                  },
+                }}
                 render={({ field, fieldState: { error } }) => (
                   <TextInput
                     {...field}
@@ -74,11 +90,24 @@ const Login = () => {
                         field.onChange(e);
                       }
                     }}
-                    type="password"
+                    type={inputType}
                     variant="outlined"
                     className={styles.textField}
                     required
                     label="Password"
+                    postContent={
+                      inputType === "password" ? (
+                        <VisibilityIcon
+                          sx={{ cursor: "pointer" }}
+                          onClick={togglePasswordVisibility}
+                        />
+                      ) : (
+                        <VisibilityOffIcon
+                          sx={{ cursor: "pointer" }}
+                          onClick={togglePasswordVisibility}
+                        />
+                      )
+                    }
                   />
                 )}
               />

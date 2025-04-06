@@ -9,7 +9,7 @@ const ModuleWrapper = ({
   moduleHeading,
   buttonText,
   children,
-  showBtn,
+  showModuleBtn,
 }: ModuleWrapperI) => {
   return (
     <>
@@ -26,7 +26,7 @@ const ModuleWrapper = ({
             justifyContent="space-between"
           >
             <h1>{moduleHeading}</h1>
-            {showBtn && (
+            {showModuleBtn && (
               <CustomButton variant="contained" color="primary2">
                 {buttonText}
               </CustomButton>
