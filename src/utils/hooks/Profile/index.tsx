@@ -1,6 +1,8 @@
+/** third party imports */
 import { useQuery } from "@tanstack/react-query";
-import { fetchUserProfile } from "../../controllers/Profile";
 import { useContext, createContext } from "react";
+/** local imports */
+import { fetchUserProfile } from "../../controllers/Profile";
 import { ChildrenPropsI } from "../../../interface";
 // import { handleErrorCodes } from "../../utilities/Helper";
 

@@ -1,16 +1,21 @@
-import styles from "./Header.module.scss";
+/** third party imports */
+import { useState } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { IconButton } from "@mui/material";
-import CustomModal from "../Modal";
-import { useState } from "react";
-import { useAuthContext } from "../../utils/hooks";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useLocation, useNavigate } from "react-router";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
-import { useLocation, useNavigate } from "react-router";
+/** local imports */
+import styles from "./Header.module.scss";
+import CustomModal from "../Modal";
+import { useAuthContext } from "../../utils/hooks";
+import CustomButton from "../Button";
+import Loader from "../Loader";
 
 const Header = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -91,15 +96,44 @@ const Header = () => {
         </Stack>
       </div>
       <CustomModal
-        heading="Logout Confirmation"
-        description=" Are you sure you want to logout? Logging out means you will no longer receive
-          notifications."
-        label="Logout"
         handleClose={handleModalClose}
         open={modalOpen}
-        onBtnClick={handleUserLogout}
-        isLoading={isUserLoggedOut}
-      />
+        maxWidth="xs"
+        fullWidth
+      >
+        <h2>
+          <ErrorOutlineIcon />
+          Logout Confirmation
+        </h2>
+        <p>
+          Are you sure you want to logout? Logging out means you will no longer
+          receive notifications.
+        </p>
+        <Stack
+          direction="row"
+          spacing={2}
+          display="flex"
+          justifyContent="flex-end"
+        >
+          <CustomButton
+            variant="outlined"
+            color="primary"
+            btnBorder="primary2"
+            textColor="primary2"
+            disabled={isUserLoggedOut}
+            onClick={handleModalClose}
+          >
+            Cancel
+          </CustomButton>
+          <CustomButton
+            variant="contained"
+            color="error2"
+            onClick={handleUserLogout}
+          >
+            {isUserLoggedOut ? <Loader type="button" /> : "Logout"}
+          </CustomButton>
+        </Stack>
+      </CustomModal>
     </header>
   );
 };

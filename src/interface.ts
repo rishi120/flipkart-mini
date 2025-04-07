@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { CircularProgressProps } from "@mui/material";
 
 export interface ChildrenPropsI {
   children: ReactNode;
@@ -9,6 +10,7 @@ export interface ModuleWrapperI {
   children: ReactNode;
   buttonText?: string;
   showModuleBtn?: boolean;
+  handleModuleBtn?: () => void;
 }
 
 export interface ButtonInterfaceI {
@@ -60,15 +62,42 @@ export interface SelectDropdownI {
 }
 
 export interface CustomModalI {
-  heading: string;
   open: boolean;
   handleClose: () => void;
-  description: string;
-  label: string;
-  onBtnClick: () => void;
-  isLoading: boolean;
+  maxWidth?: "xs" | "sm" | "md" | "lg" | "xl" | false;
+  fullWidth: boolean;
+  children: ReactNode;
 }
 
 export interface LoaderOverlayI {
   isLoading: boolean;
+}
+
+export interface ProductsI {
+  modalOpen: boolean;
+}
+
+export interface ProductFormInputI {
+  category: string;
+  description: string;
+  mainImage: string;
+  name: string;
+  price: string;
+  stock: string;
+}
+
+export interface FormI {
+  handleModalClose: () => void;
+}
+
+export interface LoaderPropsI {
+  type?: "section" | "table" | "button";
+  color?: CircularProgressProps["color"];
+  size?: number;
+  text?: string;
+}
+
+export interface FilesI {
+  files: any[];
+  setFiles: React.Dispatch<React.SetStateAction<any[]>>;
 }

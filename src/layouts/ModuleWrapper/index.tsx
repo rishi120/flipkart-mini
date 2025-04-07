@@ -1,15 +1,18 @@
-import { ModuleWrapperI } from "../../interface";
+/** third party imports */
 import { Container } from "@mui/material";
+import Stack from "@mui/material/Stack";
+/** local imports */
+import { ModuleWrapperI } from "../../interface";
 import Header from "../../components/Header";
 import styles from "./ModuleWrapper.module.scss";
 import CustomButton from "../../components/Button";
-import Stack from "@mui/material/Stack";
 
 const ModuleWrapper = ({
   moduleHeading,
   buttonText,
   children,
   showModuleBtn,
+  handleModuleBtn,
 }: ModuleWrapperI) => {
   return (
     <>
@@ -27,7 +30,11 @@ const ModuleWrapper = ({
           >
             <h1>{moduleHeading}</h1>
             {showModuleBtn && (
-              <CustomButton variant="contained" color="primary2">
+              <CustomButton
+                variant="contained"
+                color="primary2"
+                onClick={handleModuleBtn}
+              >
                 {buttonText}
               </CustomButton>
             )}

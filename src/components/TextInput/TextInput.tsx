@@ -1,3 +1,4 @@
+/** third party imports */
 import React from "react";
 import {
   TextField,
@@ -6,6 +7,8 @@ import {
   Typography,
   Theme,
 } from "@mui/material";
+
+/** local imports */
 import "./TextInput.scss";
 
 export interface TextInputI {

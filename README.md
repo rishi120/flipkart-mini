@@ -1,54 +1,43 @@
-# React + TypeScript + Vite
+# E-Commerce PoC Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a **Proof-of-Concept (PoC)** for a shopping application similar to **Flipkart**. It showcases essential features such as user authentication, product listing, product creation, and search functionality, all built using **React**, **TypeScript**, and **Vite**.
 
-Currently, two official plugins are available:
+The app is designed with a focus on a seamless user experience, fast performance, and a modular, maintainable codebase.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Key Features
 
-## Expanding the ESLint configuration
+- **User Authentication**: Handles user login and logout functionality for secure access.
+- **Product Listing**: Displays products dynamically with pagination or infinite scroll.
+- **Create Products**: Allows admins to add new products to the catalog.
+- **Product Search**: Users can search for products based on various criteria.
+- **Real-time Updates**: Implements Hot Module Replacement (HMR) for fast development and real-time updates.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Technologies Used
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- **React**: A declarative, efficient, and flexible JavaScript library for building user interfaces.
+- **TypeScript**: Adds static typing to JavaScript, making the code more predictable, safer, and easier to maintain.
+- **Vite**: A modern build tool that provides a fast and optimized development experience.
+- **ESLint**: Static code analysis tool to identify and fix problems in the codebase.
+- **Babel/SWC**: Used for fast refresh (HMR) in development to improve the developer experience.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Setup and Installation
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. **Clone the repository**:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+   ```bash
+   git clone https://github.com/rishi120/flipkart-mini/
+   ```
+
+2. **Install dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+3. **Run the application**:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser and navigate to `http://localhost:5173`.
