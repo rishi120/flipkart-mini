@@ -34,8 +34,6 @@ const CreateProductForm = ({ handleModalClose }: FormI) => {
     // });
   };
 
-  console.log(files, "==== files");
-
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Grid container spacing={2}>
