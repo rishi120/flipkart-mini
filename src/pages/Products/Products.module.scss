@@ -1,0 +1,72 @@
+@use "../../assets/Font/Font.scss";
+@use "../../assets/Variables/Variables.scss";
+
+.contentWrapper {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid Variables.$nuetral3;
+    height: 450px;
+    border-radius: 5px;
+
+    h2 {
+        font-family: Font.$Montserrat;
+        font-size: 18px;
+    }
+
+    p {
+        font-family: Font.$Montserrat;
+        font-size: 13px;
+        text-align: justify;
+        line-height: 20px;
+    }
+
+    img {
+        width: 100%;
+    }
+}
+
+.dropzoneWrapper {
+    p {
+        margin: 0;
+        font-family: Font.$Montserrat;
+        font-size: 14px;
+        color: Variables.$nuetral6;
+        font-weight: 600;
+        margin-bottom: 5px;
+
+        span {
+            color: Variables.$error2;
+        }
+    }
+
+    .innerIconWrap {
+        display: flex;
+        align-items: center;
+        border: 1px solid #cccccc;
+        padding: 8px;
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:hover {
+            border-color: Variables.$primary2;
+        }
+
+        svg {
+            margin-right: 5px;
+        }
+
+        p {
+            font-weight: normal;
+            margin-bottom: 0;
+            font-size: 13px;
+        }
+    }
+
+    .errorText {
+        font-size: 12px;
+        line-height: 16px;
+        color: Variables.$error2;
+        font-family: Font.$Montserrat;
+        margin-top: 4px;
+    }
+}

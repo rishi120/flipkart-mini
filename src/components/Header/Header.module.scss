@@ -1,0 +1,25 @@
+@use "../../assets/Font/Font";
+@use "../../assets/Variables/Variables.scss";
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+    background-color: Variables.$nuetral1;
+    border-bottom: 1px solid Variables.$nuetral3;
+}
+
+header .headerWrapper {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .headerWrapper h1 {
+    font-family: Font.$Montserrat;
+    font-size: 24px;
+    margin: 0;
+    text-indent: 10px;
+}

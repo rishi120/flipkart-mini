@@ -1,0 +1,12 @@
+@use "../../assets/Font/Font.scss";
+@use "../../assets/Variables/Variables.scss";
+
+.moduleWrapper {
+    padding-top: 100px;
+    width: 100%;
+
+    h1 {
+        font-family: Font.$Montserrat;
+        font-size: 30px;
+    }
+}
