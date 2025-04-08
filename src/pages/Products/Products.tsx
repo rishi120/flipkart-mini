@@ -1,13 +1,17 @@
+/** third party imports */
+import { Grid } from "@mui/material";
+/** local imports */
 import { useProductsContext } from "../../utils/hooks";
 import LoaderOverlay from "../../components/Loader/LoaderOverlay";
-import { Grid } from "@mui/material";
 import styles from "./Products.module.scss";
+import AddProduct from "./CreateProduct/AddProduct";
+import { ProductsI } from "../../interface";
 
-const Products = () => {
+const Products = ({ modalOpen }: ProductsI) => {
   const { useGetAllProducts } = useProductsContext();
   const { data, isPending: isProductsLoading } = useGetAllProducts(1, 10, "");
 
-  console.log(data?.data, "==== products data");
+  // console.log(data?.data, "==== products data");
 
   return (
     <>
@@ -24,6 +28,7 @@ const Products = () => {
           </Grid>
         ))}
       </Grid>
+      {modalOpen && <AddProduct />}
     </>
   );
 };

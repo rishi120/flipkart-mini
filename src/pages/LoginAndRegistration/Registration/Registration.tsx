@@ -1,14 +1,16 @@
+/** third party imports */
+import { useForm, Controller } from "react-hook-form";
 import { useState } from "react";
+import { Box } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+/** local imports */
 import CustomButton from "../../../components/Button";
 import { IFormInput } from "../../../interface";
 import Loader from "../../../components/Loader";
 import TextInput from "../../../components/TextInput/TextInput";
-import { useForm, Controller } from "react-hook-form";
 import { SearchableDropDown } from "../../../components/SearchableDropdown";
-import { Box } from "@mui/material";
 import { useAuthContext } from "../../../utils/hooks";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { formFieldRegex } from "../../../utils/utilities/Helper";
 
 export const Registration = () => {
@@ -72,11 +74,6 @@ export const Registration = () => {
               error={!!error}
               placeholder="Enter Email"
               helperText={error ? error.message : null}
-              onChange={(e) => {
-                if (e.target.value.length <= 50) {
-                  field.onChange(e);
-                }
-              }}
               type="email"
               variant="outlined"
               //   className={styles.textField}
@@ -134,11 +131,6 @@ export const Registration = () => {
               error={!!error}
               placeholder="Enter Username"
               helperText={error ? error.message : null}
-              onChange={(e) => {
-                if (e.target.value.length <= 50) {
-                  field.onChange(e);
-                }
-              }}
               type="text"
               variant="outlined"
               //   className={styles.textField}

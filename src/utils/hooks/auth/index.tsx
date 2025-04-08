@@ -1,16 +1,18 @@
+/** third party imports */
 import { useContext, createContext, useState, useEffect } from "react";
-import { ChildrenPropsI } from "../../../interface";
+import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Login, Registration, Logout } from "../../controllers/Auth";
-import { handleErrorCodes, showSuccessMessage } from "../../utilities/Helper";
 import { useNavigate } from "react-router";
 import { jwtDecode, InvalidTokenError, JwtPayload } from "jwt-decode";
+/** local imports */
+import { ChildrenPropsI } from "../../../interface";
+import { Login, Registration, Logout } from "../../controllers/Auth";
+import { handleErrorCodes, showSuccessMessage } from "../../utilities/Helper";
 import {
   getStorageValue,
   setStorageValue,
   clearData,
 } from "../../../pages/LoginAndRegistration/Cookies";
-import axios from "axios";
 
 interface AuthContextI {
   storeAccessToken: string;
@@ -119,6 +121,26 @@ const useAuth = () => {
       handleErrorCodes(errorMessage);
     },
   });
+
+  axios.interceptors.response.use(
+    function (response) {
+      // Any status code that lie within the range of 2xx cause this function to trigger
+      // Do something with response data
+      return response;
+    },
+    function (error) {
+      console.log(error, "==== error");
+      if (error.response.data.statusCode === 401) {
+        clearData();
+        navigate("/");
+        queryClient.clear();
+        axios.defaults.headers.common.Authorization = "";
+      }
+      // Any status codes that falls outside the range of 2xx cause this function to trigger
+      // Do something with response error
+      return Promise.reject(error);
+    }
+  );
 
   const userLogout = () => {
     return mutateLogout();

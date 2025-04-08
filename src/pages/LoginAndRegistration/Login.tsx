@@ -1,15 +1,17 @@
+/** third party imports */
 import { useState } from "react";
+import { Container, Divider, Grid, Box } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useForm, Controller } from "react-hook-form";
+/** local imports */
 import CustomButton from "../../components/Button";
 import { useAuthContext } from "../../utils/hooks";
 import Loader from "../../components/Loader";
-import { useForm, Controller } from "react-hook-form";
-import { Container, Divider, Grid, Box } from "@mui/material";
 import { IFormInput } from "../../interface";
 import styles from "./LoginAndRegistration.module.scss";
 import Registration from "./Registration/Registration";
 import TextInput from "../../components/TextInput/TextInput";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { formFieldRegex } from "../../utils/utilities/Helper";
 
 const Login = () => {
