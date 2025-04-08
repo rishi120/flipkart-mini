@@ -2,7 +2,6 @@ import React, { forwardRef, useMemo } from "react";
 import { Box, styled } from "@mui/material";
 import ReactSelect, { StylesConfig } from "react-select";
 import CreatableSelect from "react-select/creatable";
-import { withAsyncPaginate, AsyncPaginate } from "react-select-async-paginate";
 import EllipsisText from "react-ellipsis-text";
 import styles from "./SearchableDropdown.module.scss";
 
@@ -173,8 +172,6 @@ export const SearchableDropDown = forwardRef<any, SearchableDropDownProps>(
 
     const RenderComponent: any = useMemo(() => {
       if (type === "creatable") return CreatableSelect;
-      if (type === "asyncCreatable") return withAsyncPaginate(CreatableSelect);
-      if (type === "asyncPaginate") return AsyncPaginate;
       return ReactSelect;
     }, [type]);
 
