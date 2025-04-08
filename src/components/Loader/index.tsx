@@ -1,15 +1,20 @@
-/** third party imports */
-import CircularProgress from "@mui/material/CircularProgress";
+import CircularProgress, {
+  CircularProgressProps,
+} from "@mui/material/CircularProgress";
 import { Box } from "@mui/material";
-/** local imports */
-import { LoaderPropsI } from "../../interface";
 
+interface LoaderProps {
+  type?: "section" | "table" | "button";
+  color?: CircularProgressProps["color"];
+  size?: number;
+  text?: string;
+}
 const Loader = ({
   type = "table",
   color = "inherit",
   size,
   text,
-}: LoaderPropsI) => {
+}: LoaderProps) => {
   if (type === "section") {
     return (
       <Box

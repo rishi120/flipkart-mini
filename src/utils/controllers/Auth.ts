@@ -3,7 +3,7 @@ import { postApi } from "../apis";
 
 /**
  * post api for login
- * @returns
+ * @returns data
  */
 export const Login = (data: Record<string, string>) => {
   return postApi("users/login", data);

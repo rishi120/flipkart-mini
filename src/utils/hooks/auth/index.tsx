@@ -129,7 +129,6 @@ const useAuth = () => {
       return response;
     },
     function (error) {
-      console.log(error, "==== error");
       if (error.response.data.statusCode === 401) {
         clearData();
         navigate("/");
