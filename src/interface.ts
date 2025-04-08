@@ -8,9 +8,7 @@ export interface ChildrenPropsI {
 export interface ModuleWrapperI {
   moduleHeading: string;
   children: ReactNode;
-  buttonText?: string;
-  showModuleBtn?: boolean;
-  handleModuleBtn?: () => void;
+  moduleButtons?: Record<string, any>;
 }
 
 export interface ButtonInterfaceI {
