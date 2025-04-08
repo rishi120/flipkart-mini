@@ -24,3 +24,49 @@
         width: 100%;
     }
 }
+
+.dropzoneWrapper {
+    p {
+        margin: 0;
+        font-family: Font.$Montserrat;
+        font-size: 14px;
+        color: Variables.$nuetral6;
+        font-weight: 600;
+        margin-bottom: 5px;
+
+        span {
+            color: Variables.$error2;
+        }
+    }
+
+    .innerIconWrap {
+        display: flex;
+        align-items: center;
+        border: 1px solid #cccccc;
+        padding: 8px;
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:hover {
+            border-color: Variables.$primary2;
+        }
+
+        svg {
+            margin-right: 5px;
+        }
+
+        p {
+            font-weight: normal;
+            margin-bottom: 0;
+            font-size: 13px;
+        }
+    }
+
+    .errorText {
+        font-size: 12px;
+        line-height: 16px;
+        color: Variables.$error2;
+        font-family: Font.$Montserrat;
+        margin-top: 4px;
+    }
+}

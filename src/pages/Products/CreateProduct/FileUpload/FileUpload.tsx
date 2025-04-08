@@ -1,25 +1,23 @@
 /** third party imports */
 import { useDropzone, FileWithPath } from "react-dropzone";
-import { Controller } from "react-hook-form";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 /** local imports */
 import styles from "../../Products.module.scss";
-import TextInput from "../../../../components/TextInput/TextInput";
+import { handleErrorCodes } from "../../../../utils/utilities/Helper";
 
 interface SingleFileUploadI {
-  control: any;
-  mainImage: string;
   setFiles: React.Dispatch<React.SetStateAction<any[]>>;
+  files: any[];
 }
 
-const SingleFileUpload = ({
-  control,
-  mainImage,
-  setFiles,
-}: SingleFileUploadI) => {
-  const { getRootProps } = useDropzone({
+const SingleFileUpload = ({ setFiles, files }: SingleFileUploadI) => {
+  const { getRootProps, getInputProps } = useDropzone({
     multiple: false,
+    accept: {
+      "jpg/png/jpeg": [],
+    },
     onDrop: (acceptedFiles: FileWithPath[]) => {
-      console.log("ruunning");
       setFiles(
         acceptedFiles.map((file) => ({
           file,
@@ -27,43 +25,42 @@ const SingleFileUpload = ({
         }))
       );
     },
+    onDropRejected: (_rejectedFiles) => {
+      handleErrorCodes("Only images are allowed");
+    },
   });
 
   return (
     <div {...getRootProps({ className: styles.dropzoneWrapper })}>
-      <Controller
-        control={control}
-        name={mainImage}
-        rules={{
-          required: "File is required",
-          pattern: {
-            value: /\.(jpg|jpeg|png)$/i, // Accept image formats only
-            message: "Only image files are allowed (jpg, jpeg, png)",
-          },
-          //   validate: {
-          //     lessThan1MB: (value) => {
-          //       console.log(value, "==== value");
-          //       // Check the size of the file
-          //       if (value?.[0]?.size > 1048576) {
-          //         return "File size should be less than 1MB";
-          //       }
-          //       return true;
-          //     },
-          //   },
-        }}
-        render={({ field, fieldState: { error } }) => (
-          <TextInput
-            {...field}
-            error={!!error}
-            helperText={error ? error.message : null}
+      <p>
+        Select Image <span>*</span>
+      </p>
+      {files.length == 0 && (
+        <>
+          <input
+            {...getInputProps()}
             type="file"
-            variant="outlined"
-            //   className={styles.textField}
-            required
-            label="Select Product Image"
+            data-testid="dropzone"
+            className={styles.dropzoneInput}
           />
-        )}
-      />
+          <div className={styles.innerIconWrap}>
+            <UploadFileIcon />
+            <p>Select or drop document here</p>
+          </div>
+        </>
+      )}
+      {/* Display uploaded file previews */}
+      {files.length > 0 && (
+        <>
+          {files.map((fileObj) => (
+            <div key={fileObj.file.name} className={styles.innerIconWrap}>
+              <CheckCircleOutlineIcon />
+              <p>{fileObj.file.name}</p>
+            </div>
+          ))}
+        </>
+      )}
+      {/* {files.length === 0 && <p className={styles.errorText}>dddsddsd</p>} */}
     </div>
   );
 };

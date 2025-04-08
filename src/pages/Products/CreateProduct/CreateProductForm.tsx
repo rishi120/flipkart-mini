@@ -34,6 +34,8 @@ const CreateProductForm = ({ handleModalClose }: FormI) => {
     // });
   };
 
+  console.log(files, "==== files");
+
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Grid container spacing={2}>
@@ -127,11 +129,7 @@ const CreateProductForm = ({ handleModalClose }: FormI) => {
         </Grid>
 
         <Grid size={6}>
-          <SingleFileUpload
-            control={control}
-            mainImage="mainImage"
-            setFiles={setFiles}
-          />
+          <SingleFileUpload setFiles={setFiles} files={files} />
         </Grid>
         <Grid size={6}>
           <Controller
