@@ -1,8 +1,6 @@
-/** third party imports */
 import { useQuery } from "@tanstack/react-query";
-import { useContext, createContext, useState } from "react";
-/** local imports */
 import { fetchAllProducts } from "../../controllers/Product";
+import { useContext, createContext } from "react";
 import { ChildrenPropsI } from "../../../interface";
 // import { handleErrorCodes } from "../../utilities/Helper";
 
@@ -11,8 +9,6 @@ export const useProductsContext = () =>
   useContext(createProductsListingContext);
 
 const useProductsListing = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-
   const useGetAllProducts = (
     page: number,
     limit: number,
@@ -27,12 +23,7 @@ const useProductsListing = () => {
     });
 
   return {
-    // for calling the get all products api
     useGetAllProducts,
-
-    // for handling the modal states
-    modalOpen,
-    setModalOpen,
   };
 };
 

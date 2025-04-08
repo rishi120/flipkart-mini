@@ -1,9 +1,7 @@
-/** third party imports */
-import { BrowserRouter } from "react-router";
-import { ToastContainer } from "react-toastify";
-/** local imports */
 import ContextContainer from "./context";
 import AppRoutes from "./routes/Routes";
+import { BrowserRouter } from "react-router";
+import { ToastContainer } from "react-toastify";
 import { TOASTER_AUTO_CLOSE } from "./constants";
 import { TOASTER_POSITION } from "./enums";
 

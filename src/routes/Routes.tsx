@@ -1,8 +1,6 @@
-/** third party imports */
-import { Routes, Route } from "react-router";
-/** local imports */
 import LoginWrapper from "../pages/LoginAndRegistration";
 import ProductsWrapper from "../pages/Products";
+import { Routes, Route } from "react-router";
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
 import ProfileWrapper from "../pages/Profile";

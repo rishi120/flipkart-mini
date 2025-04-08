@@ -2,9 +2,6 @@
 @use "../../assets/Variables/Variables.scss";
 
 
-.modalWrapper {
-    padding: 20px;
-}
 
 .modalWrapper h2 {
     display: flex;
@@ -14,6 +11,7 @@
     font-weight: 600;
 
     svg {
+        color: Variables.$error2;
         padding-right: 10px;
     }
 }
@@ -21,5 +19,5 @@
 .modalWrapper p {
     font-family: Font.$Montserrat;
     font-size: 15px;
-    // padding-bottom: 20px;
+    padding-bottom: 20px;
 }
