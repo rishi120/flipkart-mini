@@ -40,4 +40,4 @@ The app is designed with a focus on a seamless user experience, fast performance
    npm run dev
    ```
 
-4. Open your browser and navigate to `http://localhost:5173`.
+4. Open your browser and navigate to `http://localhost:5173`.     
