@@ -15,7 +15,9 @@ const SingleFileUpload = ({ setFiles, files }: SingleFileUploadI) => {
   const { getRootProps, getInputProps } = useDropzone({
     multiple: false,
     accept: {
-      "jpg/png/jpeg": [],
+      png: [],
+      jpg: [],
+      jpeg: [],
     },
     onDrop: (acceptedFiles: FileWithPath[]) => {
       setFiles(
@@ -25,7 +27,7 @@ const SingleFileUpload = ({ setFiles, files }: SingleFileUploadI) => {
         }))
       );
     },
-    onDropRejected: (_rejectedFiles) => {
+    onDropRejected: () => {
       handleErrorCodes("Only images are allowed");
     },
   });

@@ -9,22 +9,29 @@ import TextInput from "../../../components/TextInput/TextInput";
 import CustomButton from "../../../components/Button";
 import { FormI } from "../../../interface";
 import SingleFileUpload from "./FileUpload/FileUpload";
+import { useProductsContext } from "../../../utils/hooks";
+import Loader from "../../../components/Loader";
 
 const CreateProductForm = ({ handleModalClose }: FormI) => {
   const { handleSubmit, control } = useForm<ProductFormInputI>();
   const [files, setFiles] = useState<FilesI[]>([]);
+  const { handleCreateProducts, isCreatingProduct } = useProductsContext();
 
   const handleFormSubmit = (data: any) => {
-    // const requestPayload = {
-    //   email: data.email,
-    //   password: data.password,
-    //   username: data.userName,
-    //   role: data.roles.label.toUpperCase(),
-    // };
-    console.log(files, "==== files");
-    console.log(data, "==== data");
+    const fileName = files.map((items: Record<string, any>) => items.file.name);
 
-    // handleRegistration(requestPayload);
+    const requestPayload = {
+      category: data.category,
+      description: data.description,
+      name: data.name,
+      price: data.price,
+      stock: data.stock,
+      mainImage: fileName[0],
+    };
+
+    handleCreateProducts(requestPayload);
+
+    setFiles([]);
 
     // reset({
     //   email: "",
@@ -166,11 +173,12 @@ const CreateProductForm = ({ handleModalClose }: FormI) => {
             textColor="primary2"
             // disabled={isUserLoggedOut}
             onClick={handleModalClose}
+            disabled={isCreatingProduct}
           >
             Cancel
           </CustomButton>
           <CustomButton variant="contained" type="submit" color="primary2">
-            Add
+            {isCreatingProduct ? <Loader type="button" /> : "Add"}
           </CustomButton>
         </Stack>
       </Grid>
