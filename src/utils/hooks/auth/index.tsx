@@ -7,6 +7,7 @@ import { jwtDecode, InvalidTokenError, JwtPayload } from "jwt-decode";
 /** local imports */
 import { ChildrenPropsI } from "../../../interface";
 import { Login, Registration, Logout } from "../../controllers/Auth";
+// import { getRefreshToken } from "../../controllers/RefreshToken";
 import { handleErrorCodes, showSuccessMessage } from "../../utilities/Helper";
 import {
   getStorageValue,
@@ -122,6 +123,34 @@ const useAuth = () => {
     },
   });
 
+  /**
+   * use query for getting the refresh token
+   */
+
+  // const { data: refreshTokenData } = useQuery({
+  //   queryKey: ["refreshToken"],
+  //   queryFn: getRefreshToken,
+  //   enabled: !!storeAccessToken,
+  //   select: (data) => data.data,
+  //   onSuccess: (data) => {
+  //     if (data) {
+  //       const tokenDetails = data?.data?.data;
+  //       const decodeAccessToken = jwtDecode(tokenDetails?.accessToken);
+  //       setStorageValue(
+  //         tokenDetails?.accessToken,
+  //         tokenDetails?.refreshToken,
+  //         decodeAccessToken?.exp || 0
+  //       );
+  //       setStoreAccessToken(tokenDetails?.accessToken);
+  //       axios.defaults.headers.common.Authorization = `Bearer ${tokenDetails?.accessToken}`;
+  //     }
+  //   },
+  //   onError: (error: any) => {
+  //     const errorMessage = error?.response?.data?.message;
+  //     handleErrorCodes(errorMessage);
+  //   },
+  // });
+
   axios.interceptors.response.use(
     function (response) {
       // Any status code that lie within the range of 2xx cause this function to trigger
@@ -129,7 +158,6 @@ const useAuth = () => {
       return response;
     },
     function (error) {
-      console.log(error, "==== error");
       if (error.response.data.statusCode === 401) {
         clearData();
         navigate("/");

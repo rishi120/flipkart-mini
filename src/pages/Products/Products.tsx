@@ -5,9 +5,15 @@ import { useProductsContext } from "../../utils/hooks";
 import LoaderOverlay from "../../components/Loader/LoaderOverlay";
 import styles from "./Products.module.scss";
 import AddProduct from "./CreateProduct/AddProduct";
+import CreateCategory from "./CreateCategory";
 import { ProductsI } from "../../interface";
 
-const Products = ({ modalOpen }: ProductsI) => {
+const Products = ({
+  modalOpen,
+  setModalOpen,
+  openCategoryModal,
+  setOpenCategoryModal,
+}: ProductsI) => {
   const { useGetAllProducts } = useProductsContext();
   const { data, isPending: isProductsLoading } = useGetAllProducts(1, 10, "");
 
@@ -28,7 +34,15 @@ const Products = ({ modalOpen }: ProductsI) => {
           </Grid>
         ))}
       </Grid>
-      {modalOpen && <AddProduct />}
+      {modalOpen && (
+        <AddProduct modalOpen={modalOpen} setModalOpen={setModalOpen} />
+      )}
+      {openCategoryModal && (
+        <CreateCategory
+          setOpenCategoryModal={setOpenCategoryModal}
+          openCategoryModal={openCategoryModal}
+        />
+      )}
     </>
   );
 };

@@ -2,29 +2,50 @@
 import { useForm, Controller } from "react-hook-form";
 import { Grid } from "@mui/material";
 import { Stack } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 /** local imports */
 import { ProductFormInputI, FilesI } from "../../../interface";
 import TextInput from "../../../components/TextInput/TextInput";
 import CustomButton from "../../../components/Button";
 import { FormI } from "../../../interface";
 import SingleFileUpload from "./FileUpload/FileUpload";
+import { useProductsContext } from "../../../utils/hooks";
+import Loader from "../../../components/Loader";
+import { SearchableDropDown } from "../../../components/SearchableDropdown";
 
-const CreateProductForm = ({ handleModalClose }: FormI) => {
+const CreateProductForm = ({ handleModalClose, data }: FormI) => {
   const { handleSubmit, control } = useForm<ProductFormInputI>();
   const [files, setFiles] = useState<FilesI[]>([]);
+  const [options, setOptions] = useState<any[]>([]);
+
+  const { categories } = data?.data || {};
+
+  useEffect(() => {
+    const categoryOptions = categories?.map((category: any) => ({
+      label: category.name,
+      value: category._id,
+      labelId: category._id,
+    }));
+    setOptions(categoryOptions);
+  }, [categories]);
+
+  const { handleCreateProducts, isCreatingProduct } = useProductsContext();
 
   const handleFormSubmit = (data: any) => {
-    // const requestPayload = {
-    //   email: data.email,
-    //   password: data.password,
-    //   username: data.userName,
-    //   role: data.roles.label.toUpperCase(),
-    // };
-    console.log(files, "==== files");
-    console.log(data, "==== data");
+    const fileName = files.map((items: Record<string, any>) => items.file.name);
 
-    // handleRegistration(requestPayload);
+    const requestPayload = {
+      category: data.category.value,
+      description: data.description,
+      name: data.name,
+      price: data.price,
+      stock: data.stock,
+      mainImage: fileName[0],
+    };
+
+    handleCreateProducts(requestPayload);
+
+    setFiles([]);
 
     // reset({
     //   email: "",
@@ -34,52 +55,26 @@ const CreateProductForm = ({ handleModalClose }: FormI) => {
     // });
   };
 
-  console.log(files, "==== files");
-
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Grid container spacing={2}>
         <Grid size={6}>
           <Controller
-            control={control}
             name="category"
+            control={control}
             rules={{
               required: "Category is required",
             }}
             render={({ field, fieldState: { error } }) => (
-              <TextInput
+              <SearchableDropDown
                 {...field}
-                error={!!error}
-                placeholder="Enter Category Id"
-                helperText={error ? error.message : null}
-                type="text"
-                variant="outlined"
-                //   className={styles.textField}
+                label="Select Category"
+                options={options}
                 required
-                label="Category ID"
-              />
-            )}
-          />
-        </Grid>
-        <Grid size={6}>
-          <Controller
-            control={control}
-            name="description"
-            rules={{
-              required: "Description is required",
-            }}
-            render={({ field, fieldState: { error } }) => (
-              <TextInput
-                {...field}
-                name="description"
+                // isDisabled={isReschedule}
                 error={!!error}
-                placeholder="Enter Description"
                 helperText={error ? error.message : null}
-                type="text"
-                variant="outlined"
-                //   className={styles.textField}
-                required
-                label="Description"
+                isSearchable={true}
               />
             )}
           />
@@ -153,6 +148,31 @@ const CreateProductForm = ({ handleModalClose }: FormI) => {
             )}
           />
         </Grid>
+        <Grid size={12}>
+          <Controller
+            control={control}
+            name="description"
+            rules={{
+              required: "Description is required",
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <TextInput
+                {...field}
+                name="description"
+                error={!!error}
+                placeholder="Enter Description"
+                helperText={error ? error.message : null}
+                type="text"
+                variant="outlined"
+                //   className={styles.textField}
+                required
+                label="Description"
+                multiline
+                rows={4}
+              />
+            )}
+          />
+        </Grid>
 
         <Stack
           direction="row"
@@ -168,11 +188,12 @@ const CreateProductForm = ({ handleModalClose }: FormI) => {
             textColor="primary2"
             // disabled={isUserLoggedOut}
             onClick={handleModalClose}
+            disabled={isCreatingProduct}
           >
             Cancel
           </CustomButton>
           <CustomButton variant="contained" type="submit" color="primary2">
-            Add
+            {isCreatingProduct ? <Loader type="button" /> : "Add"}
           </CustomButton>
         </Stack>
       </Grid>
