@@ -1,6 +1,6 @@
 /** third party imports */
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { useContext, createContext, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useContext, createContext } from "react";
 /** local imports */
 import { fetchAllProducts, createProducts } from "../../controllers/Product";
 import { ChildrenPropsI } from "../../../interface";
@@ -12,9 +12,7 @@ export const useProductsContext = () =>
   useContext(createProductsListingContext);
 
 const useProductsListing = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-
-  //   const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   const useGetAllProducts = (
     page: number,
@@ -36,6 +34,7 @@ const useProductsListing = () => {
       mutationFn: createProducts,
       onSuccess: (data) => {
         console.log(data, "data");
+        queryClient.refetchQueries({ queryKey: ["productDetails"] });
       },
       onError: (error: Record<string, any>) => {
         const errorObj = error?.response?.data;
@@ -50,10 +49,6 @@ const useProductsListing = () => {
   return {
     // for calling the get all products api
     useGetAllProducts,
-
-    // for handling the modal states
-    modalOpen,
-    setModalOpen,
 
     // for creating products
     handleCreateProducts,

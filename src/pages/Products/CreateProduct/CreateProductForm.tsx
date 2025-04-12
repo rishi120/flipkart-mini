@@ -2,7 +2,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { Grid } from "@mui/material";
 import { Stack } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 /** local imports */
 import { ProductFormInputI, FilesI } from "../../../interface";
 import TextInput from "../../../components/TextInput/TextInput";
@@ -11,17 +11,31 @@ import { FormI } from "../../../interface";
 import SingleFileUpload from "./FileUpload/FileUpload";
 import { useProductsContext } from "../../../utils/hooks";
 import Loader from "../../../components/Loader";
+import { SearchableDropDown } from "../../../components/SearchableDropdown";
 
-const CreateProductForm = ({ handleModalClose }: FormI) => {
+const CreateProductForm = ({ handleModalClose, data }: FormI) => {
   const { handleSubmit, control } = useForm<ProductFormInputI>();
   const [files, setFiles] = useState<FilesI[]>([]);
+  const [options, setOptions] = useState<any[]>([]);
+
+  const { categories } = data?.data || {};
+
+  useEffect(() => {
+    const categoryOptions = categories?.map((category: any) => ({
+      label: category.name,
+      value: category._id,
+      labelId: category._id,
+    }));
+    setOptions(categoryOptions);
+  }, [categories]);
+
   const { handleCreateProducts, isCreatingProduct } = useProductsContext();
 
   const handleFormSubmit = (data: any) => {
     const fileName = files.map((items: Record<string, any>) => items.file.name);
 
     const requestPayload = {
-      category: data.category,
+      category: data.category.value,
       description: data.description,
       name: data.name,
       price: data.price,
@@ -46,45 +60,21 @@ const CreateProductForm = ({ handleModalClose }: FormI) => {
       <Grid container spacing={2}>
         <Grid size={6}>
           <Controller
-            control={control}
             name="category"
+            control={control}
             rules={{
               required: "Category is required",
             }}
             render={({ field, fieldState: { error } }) => (
-              <TextInput
+              <SearchableDropDown
                 {...field}
-                error={!!error}
-                placeholder="Enter Category Id"
-                helperText={error ? error.message : null}
-                type="text"
-                variant="outlined"
-                //   className={styles.textField}
+                label="Select Category"
+                options={options}
                 required
-                label="Category ID"
-              />
-            )}
-          />
-        </Grid>
-        <Grid size={6}>
-          <Controller
-            control={control}
-            name="description"
-            rules={{
-              required: "Description is required",
-            }}
-            render={({ field, fieldState: { error } }) => (
-              <TextInput
-                {...field}
-                name="description"
+                // isDisabled={isReschedule}
                 error={!!error}
-                placeholder="Enter Description"
                 helperText={error ? error.message : null}
-                type="text"
-                variant="outlined"
-                //   className={styles.textField}
-                required
-                label="Description"
+                isSearchable={true}
               />
             )}
           />
@@ -154,6 +144,31 @@ const CreateProductForm = ({ handleModalClose }: FormI) => {
                 //   className={styles.textField}
                 required
                 label="Stock"
+              />
+            )}
+          />
+        </Grid>
+        <Grid size={12}>
+          <Controller
+            control={control}
+            name="description"
+            rules={{
+              required: "Description is required",
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <TextInput
+                {...field}
+                name="description"
+                error={!!error}
+                placeholder="Enter Description"
+                helperText={error ? error.message : null}
+                type="text"
+                variant="outlined"
+                //   className={styles.textField}
+                required
+                label="Description"
+                multiline
+                rows={4}
               />
             )}
           />

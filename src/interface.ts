@@ -73,6 +73,9 @@ export interface LoaderOverlayI {
 
 export interface ProductsI {
   modalOpen: boolean;
+  setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  openCategoryModal: boolean;
+  setOpenCategoryModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface ProductFormInputI {
@@ -84,8 +87,13 @@ export interface ProductFormInputI {
   stock: string;
 }
 
+export interface CreateCategoryFormInputI {
+  categoryName: string;
+}
+
 export interface FormI {
   handleModalClose: () => void;
+  data: Record<string, any>;
 }
 
 export interface LoaderPropsI {

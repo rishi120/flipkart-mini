@@ -1,9 +1,12 @@
+/** third party imports */
+import { useState } from "react";
+/** local imports */
 import Products from "./Products";
 import ModuleWrapper from "../../layouts/ModuleWrapper";
-import { useProductsContext } from "../../utils/hooks";
 
 const ProductsWrapper = () => {
-  const { setModalOpen, modalOpen } = useProductsContext();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [openCategoryModal, setOpenCategoryModal] = useState(false);
 
   const buttonContent = [
     {
@@ -23,12 +26,17 @@ const ProductsWrapper = () => {
   };
 
   const handleCreateCategory = () => {
-    console.log("category");
+    setOpenCategoryModal(true);
   };
 
   return (
     <ModuleWrapper moduleHeading="Products" moduleButtons={buttonContent}>
-      <Products modalOpen={modalOpen} />
+      <Products
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        openCategoryModal={openCategoryModal}
+        setOpenCategoryModal={setOpenCategoryModal}
+      />
     </ModuleWrapper>
   );
 };
