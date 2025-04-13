@@ -1,4 +1,4 @@
-import { getApi, postApi } from "../apis";
+import { getApi, postApi, deleteApi } from "../apis";
 
 /**
  * fetch product details
@@ -21,9 +21,13 @@ export const fetchAllProducts = (
  */
 
 export const createProducts = (data: Record<string, any>) => {
-  return postApi("ecommerce/products", data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  return postApi("ecommerce/products", data);
+};
+
+/**
+ * delete api for deleting a product
+ */
+
+export const deleteProduct = (productId: string) => {
+  return deleteApi(`ecommerce/products/${productId}`);
 };

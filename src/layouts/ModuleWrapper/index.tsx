@@ -7,16 +7,20 @@ import Header from "../../components/Header";
 import styles from "./ModuleWrapper.module.scss";
 import CustomButton from "../../components/Button";
 import { useAuthContext } from "../../utils/hooks";
+import LoaderOverlay from "../../components/Loader/LoaderOverlay";
 
 const ModuleWrapper = ({
   moduleHeading,
   moduleButtons,
   children,
 }: ModuleWrapperI) => {
-  const { userDetails } = useAuthContext();
+  const { userDetails, isFetchingAccessToken } = useAuthContext();
 
   return (
     <>
+      {isFetchingAccessToken && (
+        <LoaderOverlay isLoading={isFetchingAccessToken} />
+      )}
       <Header />
       <Container
         maxWidth="xl"

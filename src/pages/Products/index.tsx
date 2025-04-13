@@ -3,9 +3,10 @@ import { useState } from "react";
 /** local imports */
 import Products from "./Products";
 import ModuleWrapper from "../../layouts/ModuleWrapper";
+import { useProductsContext } from "../../utils/hooks";
 
 const ProductsWrapper = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const { modalOpen, setModalOpen } = useProductsContext();
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
 
   const buttonContent = [

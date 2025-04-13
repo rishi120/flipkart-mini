@@ -1,22 +1,20 @@
 /** third party imports */
 import { useForm, Controller } from "react-hook-form";
-import { Grid } from "@mui/material";
-import { Stack } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import { useState, useEffect } from "react";
 /** local imports */
-import { ProductFormInputI, FilesI } from "../../../interface";
+import { ProductFormInputI, FilesI, FormI } from "../../../interface";
 import TextInput from "../../../components/TextInput/TextInput";
 import CustomButton from "../../../components/Button";
-import { FormI } from "../../../interface";
 import SingleFileUpload from "./FileUpload/FileUpload";
 import { useProductsContext } from "../../../utils/hooks";
 import Loader from "../../../components/Loader";
 import { SearchableDropDown } from "../../../components/SearchableDropdown";
 
 const CreateProductForm = ({ handleModalClose, data }: FormI) => {
-  const { handleSubmit, control } = useForm<ProductFormInputI>();
+  const { handleSubmit, control, reset } = useForm<ProductFormInputI>();
   const [files, setFiles] = useState<FilesI[]>([]);
-  const [options, setOptions] = useState<any[]>([]);
+  const [options, setOptions] = useState([]);
 
   const { categories } = data?.data || {};
 
@@ -32,27 +30,27 @@ const CreateProductForm = ({ handleModalClose, data }: FormI) => {
   const { handleCreateProducts, isCreatingProduct } = useProductsContext();
 
   const handleFormSubmit = (data: any) => {
-    const fileName = files.map((items: Record<string, any>) => items.file.name);
+    const formData = new FormData();
+    formData.append("category", data.category.value);
+    formData.append("description", data.description);
+    formData.append("name", data.name);
+    formData.append("price", data.price);
+    formData.append("stock", data.stock);
 
-    const requestPayload = {
-      category: data.category.value,
-      description: data.description,
-      name: data.name,
-      price: data.price,
-      stock: data.stock,
-      mainImage: fileName[0],
-    };
+    if (files.length > 0 && files[0] instanceof File) {
+      formData.append("mainImage", files[0]);
+    }
 
-    handleCreateProducts(requestPayload);
+    handleCreateProducts(formData);
 
+    reset({
+      category: "",
+      description: "",
+      name: "",
+      price: "",
+      stock: "",
+    });
     setFiles([]);
-
-    // reset({
-    //   email: "",
-    //   password: "",
-    //   userName: "",
-    //   roles: [],
-    // });
   };
 
   return (
@@ -71,7 +69,6 @@ const CreateProductForm = ({ handleModalClose, data }: FormI) => {
                 label="Select Category"
                 options={options}
                 required
-                // isDisabled={isReschedule}
                 error={!!error}
                 helperText={error ? error.message : null}
                 isSearchable={true}

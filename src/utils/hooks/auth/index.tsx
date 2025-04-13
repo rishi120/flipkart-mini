@@ -1,13 +1,13 @@
 /** third party imports */
 import { useContext, createContext, useState, useEffect } from "react";
-import axios from "axios";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { jwtDecode, InvalidTokenError, JwtPayload } from "jwt-decode";
 /** local imports */
 import { ChildrenPropsI } from "../../../interface";
 import { Login, Registration, Logout } from "../../controllers/Auth";
-// import { getRefreshToken } from "../../controllers/RefreshToken";
+import { refreshToken } from "../../controllers/RefreshToken";
 import { handleErrorCodes, showSuccessMessage } from "../../utilities/Helper";
 import {
   getStorageValue,
@@ -73,15 +73,10 @@ const useAuth = () => {
     mutationFn: Login,
     onSuccess: (data) => {
       const tokenDetails = data?.data?.data;
-      const decodeAccessToken = jwtDecode(tokenDetails?.accessToken);
       localStorage.setItem("userDetails", JSON.stringify(tokenDetails?.user));
       axios.defaults.headers.common.Authorization = `Bearer ${tokenDetails?.accessToken}`;
       setStoreAccessToken(tokenDetails?.accessToken);
-      setStorageValue(
-        tokenDetails?.accessToken,
-        tokenDetails?.refreshToken,
-        decodeAccessToken?.exp || 0
-      );
+      setStorageValue(tokenDetails?.accessToken, tokenDetails?.refreshToken);
       showSuccessMessage(data?.data?.message, "login");
       navigate("/products");
     },
@@ -123,49 +118,96 @@ const useAuth = () => {
     },
   });
 
+  let isRefreshing = false;
+  let refreshSubscribers: ((token: string) => void)[] = [];
+
+  function subscribeTokenRefresh(cb: (token: string) => void) {
+    refreshSubscribers.push(cb);
+  }
+
+  function onRrefreshed(token: string) {
+    refreshSubscribers.forEach((cb) => cb(token));
+    refreshSubscribers = [];
+  }
+
   /**
-   * use query for getting the refresh token
+   * use mutation hook for calling the refresh token api
    */
 
-  // const { data: refreshTokenData } = useQuery({
-  //   queryKey: ["refreshToken"],
-  //   queryFn: getRefreshToken,
-  //   enabled: !!storeAccessToken,
-  //   select: (data) => data.data,
-  //   onSuccess: (data) => {
-  //     if (data) {
-  //       const tokenDetails = data?.data?.data;
-  //       const decodeAccessToken = jwtDecode(tokenDetails?.accessToken);
-  //       setStorageValue(
-  //         tokenDetails?.accessToken,
-  //         tokenDetails?.refreshToken,
-  //         decodeAccessToken?.exp || 0
-  //       );
-  //       setStoreAccessToken(tokenDetails?.accessToken);
-  //       axios.defaults.headers.common.Authorization = `Bearer ${tokenDetails?.accessToken}`;
-  //     }
-  //   },
-  //   onError: (error: any) => {
-  //     const errorMessage = error?.response?.data?.message;
-  //     handleErrorCodes(errorMessage);
-  //   },
-  // });
+  const { mutate: mutateRefreshToken, isPending: isFetchingAccessToken } =
+    useMutation({
+      mutationFn: refreshToken,
+      onSuccess: (data: Record<string, any>) => {
+        const tokenDetails = data?.data?.data;
+        axios.defaults.headers.common.Authorization = `Bearer ${tokenDetails?.accessToken}`;
+        setStoreAccessToken(tokenDetails?.accessToken);
+        setStorageValue(tokenDetails?.accessToken, tokenDetails?.refreshToken);
+        queryClient.invalidateQueries();
+      },
+      onError: (error: any) => {
+        const errorMessage = error?.response?.data?.message;
+        handleErrorCodes(errorMessage);
+      },
+    });
 
   axios.interceptors.response.use(
-    function (response) {
-      // Any status code that lie within the range of 2xx cause this function to trigger
-      // Do something with response data
-      return response;
-    },
-    function (error) {
-      if (error.response.data.statusCode === 401) {
-        clearData();
-        navigate("/");
-        queryClient.clear();
-        axios.defaults.headers.common.Authorization = "";
+    (response: AxiosResponse) => response,
+    async (error: AxiosError) => {
+      const status = error.response?.status;
+
+      if (status === 401) {
+        const refreshToken = getStorageValue("refresh_token");
+
+        if (!isRefreshing) {
+          isRefreshing = true;
+
+          return new Promise((resolve, reject) => {
+            mutateRefreshToken(refreshToken, {
+              onSuccess: (data: Record<string, any>) => {
+                const tokenDetails = data?.data?.data;
+
+                axios.defaults.headers.common.Authorization = `Bearer ${tokenDetails?.accessToken}`;
+                setStoreAccessToken(tokenDetails?.accessToken);
+                setStorageValue(
+                  tokenDetails?.accessToken,
+                  tokenDetails?.refreshToken
+                );
+                queryClient.invalidateQueries();
+
+                onRrefreshed(tokenDetails?.accessToken);
+                isRefreshing = false;
+
+                // Retry the original request
+                const originalRequest = error.config as AxiosRequestConfig;
+                originalRequest.headers = {
+                  ...originalRequest.headers,
+                  Authorization: `Bearer ${tokenDetails?.accessToken}`,
+                };
+                resolve(axios(originalRequest));
+              },
+              onError: (refreshError: any) => {
+                const errorMessage = refreshError?.response?.data?.message;
+                handleErrorCodes(errorMessage);
+                isRefreshing = false;
+                reject(refreshError);
+              },
+            });
+          });
+        }
+
+        // Already refreshing: queue the request
+        return new Promise((resolve) => {
+          subscribeTokenRefresh((newToken: string) => {
+            const originalRequest = error.config as AxiosRequestConfig;
+            originalRequest.headers = {
+              ...originalRequest.headers,
+              Authorization: `Bearer ${newToken}`,
+            };
+            resolve(axios(originalRequest));
+          });
+        });
       }
-      // Any status codes that falls outside the range of 2xx cause this function to trigger
-      // Do something with response error
+
       return Promise.reject(error);
     }
   );
@@ -200,6 +242,9 @@ const useAuth = () => {
     // for logout
     userLogout,
     isUserLoggedOut,
+
+    // for fetching access token
+    isFetchingAccessToken,
   };
 };
 

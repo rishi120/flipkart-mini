@@ -1,5 +1,5 @@
-import { getApi } from "../apis";
+import { postApi } from "../apis";
 
-export const getRefreshToken = () => {
-  return getApi("users/refresh-token");
+export const refreshToken = (refreshToken: string) => {
+  return postApi("users/refresh-token", { refreshToken });
 };

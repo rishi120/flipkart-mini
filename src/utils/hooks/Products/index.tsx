@@ -1,11 +1,14 @@
 /** third party imports */
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useContext, createContext } from "react";
+import { useContext, createContext, useState } from "react";
 /** local imports */
-import { fetchAllProducts, createProducts } from "../../controllers/Product";
+import {
+  fetchAllProducts,
+  createProducts,
+  deleteProduct,
+} from "../../controllers/Product";
 import { ChildrenPropsI } from "../../../interface";
-import { handleErrorCodes } from "../../utilities/Helper";
-// import { handleErrorCodes } from "../../utilities/Helper";
+import { handleErrorCodes, showSuccessMessage } from "../../utilities/Helper";
 
 const createProductsListingContext = createContext<any>(null);
 export const useProductsContext = () =>
@@ -13,6 +16,8 @@ export const useProductsContext = () =>
 
 const useProductsListing = () => {
   const queryClient = useQueryClient();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const useGetAllProducts = (
     page: number,
@@ -33,7 +38,30 @@ const useProductsListing = () => {
     useMutation({
       mutationFn: createProducts,
       onSuccess: (data) => {
-        console.log(data, "data");
+        if (data?.data?.statusCode === 201) {
+          const successMessage = data?.data?.message;
+          showSuccessMessage(successMessage, "toast1");
+          setModalOpen(false);
+        }
+        queryClient.refetchQueries({ queryKey: ["productDetails"] });
+      },
+      onError: (error: Record<string, any>) => {
+        const errorObj = error?.response?.data;
+        handleErrorCodes(errorObj.message);
+      },
+    });
+
+  /** use mutation for deleting product */
+
+  const { mutate: mutateDeleteProduct, isPending: isProductDeleted } =
+    useMutation({
+      mutationFn: deleteProduct,
+      onSuccess: (data) => {
+        if (data?.data?.statusCode === 200) {
+          const successMessage = data?.data?.message;
+          showSuccessMessage(successMessage, "toast1");
+          setOpenDeleteModal(false);
+        }
         queryClient.refetchQueries({ queryKey: ["productDetails"] });
       },
       onError: (error: Record<string, any>) => {
@@ -53,6 +81,16 @@ const useProductsListing = () => {
     // for creating products
     handleCreateProducts,
     isCreatingProduct,
+
+    // for handling the create product form modal
+    modalOpen,
+    setModalOpen,
+
+    // for deleting a product
+    mutateDeleteProduct,
+    isProductDeleted,
+    setOpenDeleteModal,
+    openDeleteModal,
   };
 };
 
