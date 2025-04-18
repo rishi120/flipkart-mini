@@ -6,6 +6,7 @@ import {
   fetchAllProducts,
   createProducts,
   deleteProduct,
+  addToCart,
 } from "../../controllers/Product";
 import { ChildrenPropsI } from "../../../interface";
 import { handleErrorCodes, showSuccessMessage } from "../../utilities/Helper";
@@ -18,6 +19,7 @@ const useProductsListing = () => {
   const queryClient = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [isLoadingProduct, setIsLoadingProduct] = useState({});
 
   const useGetAllProducts = (
     page: number,
@@ -70,8 +72,30 @@ const useProductsListing = () => {
       },
     });
 
+  /** use mutation for adding product to the cart */
+
+  const { mutate: mutateAddProductToCart } = useMutation({
+    mutationFn: addToCart,
+    onSuccess: (data) => {
+      console.log(data, "data");
+      const { message, statusCode } = data?.data ?? {};
+      if (statusCode === 200) {
+        showSuccessMessage(message, "toast1");
+        setIsLoadingProduct({});
+      }
+    },
+    onError: (error: Record<string, any>) => {
+      const errorObj = error?.response?.data;
+      handleErrorCodes(errorObj.message);
+    },
+  });
+
   const handleCreateProducts = (data: Record<string, any>) => {
     return mutateCreateProduct(data);
+  };
+
+  const handleAddToCart = (productId: string) => {
+    return mutateAddProductToCart(productId);
   };
 
   return {
@@ -91,6 +115,11 @@ const useProductsListing = () => {
     isProductDeleted,
     setOpenDeleteModal,
     openDeleteModal,
+
+    // for calling the add to cart api and handling the isLoading states
+    handleAddToCart,
+    setIsLoadingProduct,
+    isLoadingProduct,
   };
 };
 

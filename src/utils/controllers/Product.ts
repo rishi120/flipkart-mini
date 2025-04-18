@@ -31,3 +31,11 @@ export const createProducts = (data: Record<string, any>) => {
 export const deleteProduct = (productId: string) => {
   return deleteApi(`ecommerce/products/${productId}`);
 };
+
+/**
+ * function to add a product to the cart
+ */
+
+export const addToCart = (productId: string) => {
+  return postApi(`ecommerce/cart/item/${productId}`, {});
+};

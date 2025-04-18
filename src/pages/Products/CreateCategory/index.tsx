@@ -77,7 +77,7 @@ const CreateCategory = ({
             textColor="primary2"
             // disabled={isUserLoggedOut}
             onClick={handleModalClose}
-            // disabled={isCreatingProduct}
+            disabled={isCreatingCategory}
           >
             Cancel
           </CustomButton>

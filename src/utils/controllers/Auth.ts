@@ -1,5 +1,4 @@
 import { postApi } from "../apis";
-// import { getStorageValue } from "../../pages/LoginAndRegistration/Cookies";
 
 /**
  * post api for login

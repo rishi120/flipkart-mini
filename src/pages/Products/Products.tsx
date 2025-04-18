@@ -1,5 +1,6 @@
 /** third party imports */
 import { Grid, IconButton, Stack } from "@mui/material";
+import Divider from "@mui/material/Divider";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 /** local imports */
@@ -10,6 +11,8 @@ import AddProduct from "./CreateProduct/AddProduct";
 import CreateCategory from "./CreateCategory";
 import { ProductsI } from "../../interface";
 import DeleteModal from "../../components/Modal/Delete";
+import CustomButton from "../../components/Button";
+import Loader from "../../components/Loader";
 
 const Products = ({
   modalOpen,
@@ -23,6 +26,9 @@ const Products = ({
     setOpenDeleteModal,
     mutateDeleteProduct,
     isProductDeleted,
+    handleAddToCart,
+    isLoadingProduct,
+    setIsLoadingProduct,
   } = useProductsContext();
   const { data, isPending: isProductsLoading } = useGetAllProducts(1, 10, "");
   const [storeProductId, setStoreProductId] = useState("");
@@ -40,32 +46,69 @@ const Products = ({
     setOpenDeleteModal(false);
   };
 
+  // const handleCounterIncrement = (productId: string) => {
+  //   setCounter((prevCounter) => ({
+  //     ...prevCounter,
+  //     [productId]: (prevCounter[productId] || 0) + 1,
+  //   }));
+  // };
+
+  // const handleCounterDecrement = (productId: string) => {
+  //   setCounter((prevCounter) => ({
+  //     ...prevCounter,
+  //     [productId]: (prevCounter[productId] || 0) - 1,
+  //   }));
+  // };
+
+  const handleAddProductToCart = (productId: string) => {
+    setIsLoadingProduct((prevTrue: any) => ({
+      ...prevTrue,
+      [productId]: true,
+    }));
+    return handleAddToCart(productId);
+  };
+
   return (
     <>
       {isProductsLoading && <LoaderOverlay isLoading={isProductsLoading} />}
       <Grid container spacing={2} sx={{ paddingBottom: "50px" }}>
-        {data?.data?.products.map((product: any) => (
-          <Grid size={3} key={product._id}>
-            <div className={styles.contentWrapper}>
-              <img src={product.mainImage.url} alt="Product" />
-              <h2>{product.name}</h2>
-              <p>{product.description}</p>
-              <p>${product.price}</p>
-              <div className={styles.productToolBar}>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  display="flex"
-                  justifyContent="flex-end"
-                >
-                  <IconButton onClick={() => handleProductId(product._id)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </Stack>
+        {data?.data?.products.map((product: any) => {
+          return (
+            <Grid size={3} key={product._id}>
+              <div className={styles.contentWrapper}>
+                <img src={product.mainImage.url} alt="Product" />
+                <h2>{product.name}</h2>
+                <p>{product.description}</p>
+                <p>${product.price}</p>
+                <div className={styles.productToolBar}>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    display="flex"
+                    justifyContent="flex-end"
+                  >
+                    <CustomButton
+                      variant="contained"
+                      color="primary2"
+                      disabled={isLoadingProduct[product._id]}
+                      onClick={() => handleAddProductToCart(product._id)}
+                    >
+                      {isLoadingProduct[product._id] ? (
+                        <Loader type="button" />
+                      ) : (
+                        " Add To Cart"
+                      )}
+                    </CustomButton>
+                    <Divider orientation="vertical" flexItem variant="middle" />
+                    <IconButton onClick={() => handleProductId(product._id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Stack>
+                </div>
               </div>
-            </div>
-          </Grid>
-        ))}
+            </Grid>
+          );
+        })}
       </Grid>
       <DeleteModal
         open={openDeleteModal}

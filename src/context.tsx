@@ -7,7 +7,9 @@ function ContextContainer({ children }: Readonly<ChildrenPropsI>) {
       <hooks.ProvideProfileContext>
         <hooks.ProvideProductContext>
           <hooks.CreateCategoryProvider>
-            {children}
+            <hooks.CreateCartContextProvider>
+              {children}
+            </hooks.CreateCartContextProvider>
           </hooks.CreateCategoryProvider>
         </hooks.ProvideProductContext>
       </hooks.ProvideProfileContext>
