@@ -36,6 +36,8 @@ export const deleteProduct = (productId: string) => {
  * function to add a product to the cart
  */
 
-export const addToCart = (productId: string) => {
-  return postApi(`ecommerce/cart/item/${productId}`, {});
+export const addToCart = (data: Record<string, any>) => {
+  console.log(data, "==== payloadData");
+  const { payloadData, productId } = data;
+  return postApi(`ecommerce/cart/item/${productId}`, payloadData);
 };

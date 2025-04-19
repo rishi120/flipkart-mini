@@ -40,6 +40,25 @@
         .priceWrapper {
             height: 100%;
 
+            .counter {
+                border-radius: 10px;
+                width: 40%;
+                padding: 5px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: Variables.$nuetral1;
+
+                svg {
+                    font-size: 15px;
+                }
+
+                span {
+                    font-size: 14px;
+                    font-family: Font.$Montserrat;
+                }
+            }
+
             p {
                 font-family: Font.$Montserrat;
                 margin: 0;

@@ -46,26 +46,15 @@ const Products = ({
     setOpenDeleteModal(false);
   };
 
-  // const handleCounterIncrement = (productId: string) => {
-  //   setCounter((prevCounter) => ({
-  //     ...prevCounter,
-  //     [productId]: (prevCounter[productId] || 0) + 1,
-  //   }));
-  // };
-
-  // const handleCounterDecrement = (productId: string) => {
-  //   setCounter((prevCounter) => ({
-  //     ...prevCounter,
-  //     [productId]: (prevCounter[productId] || 0) - 1,
-  //   }));
-  // };
-
   const handleAddProductToCart = (productId: string) => {
     setIsLoadingProduct((prevTrue: any) => ({
       ...prevTrue,
       [productId]: true,
     }));
-    return handleAddToCart(productId);
+
+    // sending an empty objest here since it is not required to pass any payload while adding items to cart
+    const payloadData = {};
+    return handleAddToCart(productId, payloadData);
   };
 
   return (
