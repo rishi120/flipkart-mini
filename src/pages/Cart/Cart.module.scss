@@ -1,0 +1,107 @@
+@use "../../assets/Font/Font.scss";
+@use "../../assets/Variables/Variables.scss";
+
+.CartWrapper {
+    padding: 40px 30px 20px 30px;
+
+    .cartDetailsWrapper {
+        margin-bottom: 10px;
+        padding: 20px;
+        background-color: Variables.$nuetral2;
+        border-radius: 5px;
+
+        img {
+            width: 100%;
+            border: 1px solid Variables.$nuetral2;
+            margin-bottom: 10px;
+
+        }
+
+        .productDetails {
+            border-right: 1px solid Variables.$nuetral3;
+            border-left: 1px solid Variables.$nuetral3;
+            height: 100%;
+            padding-left: 20px;
+
+            h3 {
+                margin: 0;
+                font-family: Font.$Montserrat;
+                text-transform: capitalize;
+            }
+
+            p {
+                font-family: Font.$Montserrat;
+                text-transform: capitalize;
+                line-height: 22px;
+                font-size: 13px;
+            }
+        }
+
+        .priceWrapper {
+            height: 100%;
+
+            .counter {
+                border-radius: 10px;
+                width: 40%;
+                padding: 5px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: Variables.$nuetral1;
+
+                svg {
+                    font-size: 15px;
+                }
+
+                span {
+                    font-size: 14px;
+                    font-family: Font.$Montserrat;
+                }
+            }
+
+            p {
+                font-family: Font.$Montserrat;
+                margin: 0;
+                padding-bottom: 10px;
+                display: flex;
+                justify-content: space-between;
+                font-weight: 600;
+
+                span {
+                    font-weight: normal;
+                    font-size: 13px;
+                }
+            }
+        }
+    }
+
+    .priceDetailsWrapper {
+        background-color: Variables.$nuetral2;
+        padding: 20px;
+        border-radius: 5px;
+
+        h4 {
+            font-family: Font.$Montserrat;
+            margin: 0;
+            padding-bottom: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+
+            li {
+                display: flex;
+                justify-content: space-between;
+                padding-bottom: 20px;
+                font-family: Font.$Montserrat;
+
+                &:nth-of-type(2) {
+                    span {
+                        color: Variables.$success2;
+                    }
+                }
+            }
+        }
+    }
+}
