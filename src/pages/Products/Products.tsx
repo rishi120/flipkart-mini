@@ -13,6 +13,7 @@ import { ProductsI } from "../../interface";
 import DeleteModal from "../../components/Modal/Delete";
 import CustomButton from "../../components/Button";
 import Loader from "../../components/Loader";
+import NoDataFound from "../../components/NoDataFound";
 
 const Products = ({
   modalOpen,
@@ -59,46 +60,58 @@ const Products = ({
 
   return (
     <>
-      {isProductsLoading && <LoaderOverlay isLoading={isProductsLoading} />}
-      <Grid container spacing={2} sx={{ paddingBottom: "50px" }}>
-        {data?.data?.products.map((product: any) => {
-          return (
-            <Grid size={3} key={product._id}>
-              <div className={styles.contentWrapper}>
-                <img src={product.mainImage.url} alt="Product" />
-                <h2>{product.name}</h2>
-                <p>{product.description}</p>
-                <p>${product.price}</p>
-                <div className={styles.productToolBar}>
-                  <Stack
-                    direction="row"
-                    spacing={2}
-                    display="flex"
-                    justifyContent="flex-end"
-                  >
-                    <CustomButton
-                      variant="contained"
-                      color="primary2"
-                      disabled={isLoadingProduct[product._id]}
-                      onClick={() => handleAddProductToCart(product._id)}
+      <LoaderOverlay isLoading={isProductsLoading} />
+      {data?.data?.products.length === 0 ? (
+        <NoDataFound
+          heading="no data found"
+          description="No data available. Please add a category or product to display the data."
+        />
+      ) : (
+        <Grid container spacing={2} sx={{ paddingBottom: "50px" }}>
+          {data?.data?.products.map((product: any) => {
+            return (
+              <Grid size={3} key={product._id}>
+                <div className={styles.contentWrapper}>
+                  <img src={product.mainImage.url} alt="Product" />
+                  <h2>{product.name}</h2>
+                  <p>{product.description}</p>
+                  <p>${product.price}</p>
+                  <div className={styles.productToolBar}>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      display="flex"
+                      justifyContent="flex-end"
                     >
-                      {isLoadingProduct[product._id] ? (
-                        <Loader type="button" />
-                      ) : (
-                        " Add To Cart"
-                      )}
-                    </CustomButton>
-                    <Divider orientation="vertical" flexItem variant="middle" />
-                    <IconButton onClick={() => handleProductId(product._id)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Stack>
+                      <CustomButton
+                        variant="contained"
+                        color="primary2"
+                        disabled={isLoadingProduct[product._id]}
+                        onClick={() => handleAddProductToCart(product._id)}
+                      >
+                        {isLoadingProduct[product._id] ? (
+                          <Loader type="button" />
+                        ) : (
+                          " Add To Cart"
+                        )}
+                      </CustomButton>
+                      <Divider
+                        orientation="vertical"
+                        flexItem
+                        variant="middle"
+                      />
+                      <IconButton onClick={() => handleProductId(product._id)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Stack>
+                  </div>
                 </div>
-              </div>
-            </Grid>
-          );
-        })}
-      </Grid>
+              </Grid>
+            );
+          })}
+        </Grid>
+      )}
+
       <DeleteModal
         open={openDeleteModal}
         onClose={handleCloseDeleteModal}

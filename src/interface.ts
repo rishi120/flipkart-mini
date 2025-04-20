@@ -107,3 +107,8 @@ export interface FilesI {
   file: File; // single File per object
   preview?: string; // optional preview URL or any other metadata
 }
+
+export interface NoDataFoundI {
+  heading: string;
+  description: string;
+}

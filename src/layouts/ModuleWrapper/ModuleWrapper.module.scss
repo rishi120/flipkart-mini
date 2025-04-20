@@ -4,6 +4,8 @@
 .moduleWrapper {
     padding-top: 100px;
     width: 100%;
+    height: calc(100vh - 70px);
+    box-sizing: border-box;
 
     .moduleToolbar {
         display: flex;
