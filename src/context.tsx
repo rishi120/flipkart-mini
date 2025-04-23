@@ -5,7 +5,13 @@ function ContextContainer({ children }: Readonly<ChildrenPropsI>) {
   return (
     <hooks.ProvideAuthContext>
       <hooks.ProvideProfileContext>
-        <hooks.ProvideProductContext>{children}</hooks.ProvideProductContext>
+        <hooks.ProvideProductContext>
+          <hooks.CreateCategoryProvider>
+            <hooks.CreateCartContextProvider>
+              {children}
+            </hooks.CreateCartContextProvider>
+          </hooks.CreateCategoryProvider>
+        </hooks.ProvideProductContext>
       </hooks.ProvideProfileContext>
     </hooks.ProvideAuthContext>
   );

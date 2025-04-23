@@ -13,13 +13,14 @@ import Tooltip from "@mui/material/Tooltip";
 /** local imports */
 import styles from "./Header.module.scss";
 import CustomModal from "../Modal";
-import { useAuthContext } from "../../utils/hooks";
+import { useAuthContext, useCartContext } from "../../utils/hooks";
 import CustomButton from "../Button";
 import Loader from "../Loader";
 
 const Header = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const { userLogout, isUserLoggedOut } = useAuthContext();
+  const { showCartCounter } = useCartContext();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -91,6 +92,7 @@ const Header = () => {
               <Tooltip title={label} arrow>
                 {icon}
               </Tooltip>
+              {label === "Cart" ? <p>{showCartCounter}</p> : null}
             </IconButton>
           ))}
         </Stack>

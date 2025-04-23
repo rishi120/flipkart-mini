@@ -1,9 +1,14 @@
 /** third party imports */
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useContext, createContext } from "react";
+
 /** local imports */
-import { fetchUserProfile } from "../../controllers/Profile";
+import {
+  fetchUserProfile,
+  updateCurrentPassword,
+} from "../../controllers/Profile";
 import { ChildrenPropsI } from "../../../interface";
+import { showSuccessMessage } from "../../utilities/Helper";
 // import { handleErrorCodes } from "../../utilities/Helper";
 
 const createProfileContext = createContext<any>(null);
@@ -19,8 +24,28 @@ const useProfile = () => {
       gcTime: 0,
     });
 
+  /** use mutation for updating the current user password */
+  const { mutate: mutateCurrentPassword, isPending: isPasswordUpdated } =
+    useMutation({
+      mutationFn: updateCurrentPassword,
+      onSuccess: (data) => {
+        console.log(data, "data");
+        const { message, statusCode } = data?.data;
+        showSuccessMessage(message, statusCode);
+      },
+      onError: (error: Record<string, any>) => {
+        const errorObj = error?.response?.data;
+        console.log(errorObj, "errorObj");
+        // handleErrorCodes(errorObj.message);
+      },
+    });
+
   return {
+    // for fetching the current user profile details
     useGetProfileDetails,
+    // for updating the current user password
+    mutateCurrentPassword,
+    isPasswordUpdated,
   };
 };
 
