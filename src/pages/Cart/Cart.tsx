@@ -4,7 +4,7 @@ import Divider from "@mui/material/Divider";
 import { useEffect } from "react";
 
 /** local imports */
-import { useCartContext } from "../../utils/hooks";
+import { useCartContext, useProductsContext } from "../../utils/hooks";
 import LoaderOverlay from "../../components/Loader/LoaderOverlay";
 import CartDetails from "./CartDetails";
 import styles from "./Cart.module.scss";
@@ -12,6 +12,8 @@ import NoDataFound from "../../components/NoDataFound";
 
 const Cart = () => {
   const { useGetUserCart, setShowCartCounter } = useCartContext();
+  const { handleAddToCart, quantityLoading, setQuantityLoading } =
+    useProductsContext();
 
   const { data: userCartData, isPending: isCartLoading } = useGetUserCart();
   const { cartTotal, discountedTotal } = userCartData?.data ?? {};
@@ -47,6 +49,9 @@ const Cart = () => {
                     quantity={cartDetails.quantity}
                     products={cartDetails.product}
                     key={cartDetails._id}
+                    handleAddToCart={handleAddToCart}
+                    quantityLoading={quantityLoading}
+                    setQuantityLoading={setQuantityLoading}
                   />
                 );
               }

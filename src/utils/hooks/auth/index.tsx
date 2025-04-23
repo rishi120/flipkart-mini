@@ -81,6 +81,7 @@ const useAuth = () => {
       navigate("/products");
     },
     onError: (error: Record<string, any>) => {
+      console.log(error, "error");
       const errorMessage = error?.response?.data?.message;
       handleErrorCodes(errorMessage);
     },

@@ -20,6 +20,7 @@ const useProductsListing = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [isLoadingProduct, setIsLoadingProduct] = useState({});
+  const [quantityLoading, setQuantityLoading] = useState({});
 
   const useGetAllProducts = (
     page: number,
@@ -74,23 +75,23 @@ const useProductsListing = () => {
 
   /** use mutation for adding product to the cart */
 
-  const { mutate: mutateAddProductToCart, isPending: isProductAdded } =
-    useMutation({
-      mutationFn: addToCart,
-      onSuccess: (data) => {
-        console.log(data, "data");
-        const { message, statusCode } = data?.data ?? {};
-        if (statusCode === 200) {
-          showSuccessMessage(message, "toast1");
-          setIsLoadingProduct({});
-          queryClient.refetchQueries({ queryKey: ["cartDetails"] });
-        }
-      },
-      onError: (error: Record<string, any>) => {
-        const errorObj = error?.response?.data;
-        handleErrorCodes(errorObj.message);
-      },
-    });
+  const { mutate: mutateAddProductToCart } = useMutation({
+    mutationFn: addToCart,
+    onSuccess: (data) => {
+      console.log(data, "data");
+      const { message, statusCode } = data?.data ?? {};
+      if (statusCode === 200) {
+        showSuccessMessage(message, "");
+        setIsLoadingProduct({});
+        setQuantityLoading({});
+        queryClient.refetchQueries({ queryKey: ["cartDetails"] });
+      }
+    },
+    onError: (error: Record<string, any>) => {
+      const errorObj = error?.response?.data;
+      handleErrorCodes(errorObj.message);
+    },
+  });
 
   const handleCreateProducts = (data: Record<string, any>) => {
     return mutateCreateProduct(data);
@@ -125,7 +126,10 @@ const useProductsListing = () => {
     handleAddToCart,
     setIsLoadingProduct,
     isLoadingProduct,
-    isProductAdded,
+
+    // for handling the quantity incresing/decresing state
+    setQuantityLoading,
+    quantityLoading,
   };
 };
 
