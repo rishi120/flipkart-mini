@@ -1,6 +1,7 @@
 /** third party imports */
 import { Grid } from "@mui/material";
 import Divider from "@mui/material/Divider";
+import { useEffect } from "react";
 
 /** local imports */
 import { useCartContext } from "../../utils/hooks";
@@ -10,10 +11,16 @@ import styles from "./Cart.module.scss";
 import NoDataFound from "../../components/NoDataFound";
 
 const Cart = () => {
-  const { useGetUserCart } = useCartContext();
+  const { useGetUserCart, setShowCartCounter } = useCartContext();
 
   const { data: userCartData, isPending: isCartLoading } = useGetUserCart();
   const { cartTotal, discountedTotal } = userCartData?.data ?? {};
+
+  useEffect(() => {
+    if (userCartData) {
+      setShowCartCounter(userCartData?.data?.items.length);
+    }
+  }, [userCartData]);
 
   console.log(userCartData, "userCartData");
 

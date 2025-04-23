@@ -1,6 +1,6 @@
 /** third party imports */
 import { Grid, IconButton, Stack } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 
@@ -18,7 +18,7 @@ interface CartDetailsI {
 }
 
 const CartDetails = ({ id, products, quantity }: CartDetailsI) => {
-  const [storeProductId, setStoreProductId] = useState("");
+  const [storeProductId, setStoreProductId] = useState<any>("");
   const [counter, setCounter] = useState(quantity);
   const { modalOpen, setModalOpen, mutateDeleteCart, isCartItemDeleted } =
     useCartContext();
@@ -45,13 +45,21 @@ const CartDetails = ({ id, products, quantity }: CartDetailsI) => {
     return handleAddToCart(productId, requestPayload);
   };
 
-  const handleCounterDecrement = (productId: string) => {
+  const handleCounterDecrement = (productId: any) => {
     setCounter(counter - 1);
-    const requestPayload = {
-      quantity: counter - 1,
-    };
-    return handleAddToCart(productId, requestPayload);
+    setStoreProductId(productId);
   };
+
+  useEffect(() => {
+    if (counter > 1) {
+      const requestPayload = {
+        quantity: counter - 1,
+      };
+      handleAddToCart(storeProductId, requestPayload);
+    } else {
+      setModalOpen(storeProductId);
+    }
+  }, [counter]);
 
   return (
     <>

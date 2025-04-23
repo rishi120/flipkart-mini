@@ -13,6 +13,8 @@ interface CreateUserCartContextI {
   modalOpen: boolean;
   mutateDeleteCart: any;
   isCartItemDeleted: boolean;
+  showCartCounter: number;
+  setShowCartCounter: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const cartInitialData = {
@@ -21,6 +23,8 @@ const cartInitialData = {
   modalOpen: false,
   mutateDeleteCart: () => {},
   isCartItemDeleted: false,
+  showCartCounter: 0,
+  setShowCartCounter: () => {},
 };
 
 const CreateUserCartContext =
@@ -29,6 +33,7 @@ export const useCartContext = () => useContext(CreateUserCartContext);
 
 const useCartContextData = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [showCartCounter, setShowCartCounter] = useState(0);
 
   const queryClient = useQueryClient();
 
@@ -70,6 +75,10 @@ const useCartContextData = () => {
     // for handling the delete confirmation modal
     modalOpen,
     setModalOpen,
+
+    // for handling the cart counter
+    showCartCounter,
+    setShowCartCounter,
   };
 };
 

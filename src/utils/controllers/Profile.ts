@@ -6,5 +6,5 @@ import { getApi } from "../apis";
  */
 
 export const fetchUserProfile = () => {
-  return getApi("ecommerce/profile");
+  return getApi("users/current-user");
 };

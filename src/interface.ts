@@ -33,6 +33,11 @@ export interface IFormInput {
   userName?: string;
 }
 
+export interface ProfileFormInputI {
+  currentPassword: string;
+  newPassword: string;
+}
+
 /**
  * Shared type for dropdown options
  */
