@@ -1,5 +1,5 @@
 /** third party imports */
-import { useContext, createContext, useState, useEffect } from "react";
+import { useContext, createContext, useState, useEffect, useRef } from "react";
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
@@ -30,6 +30,7 @@ const useAuth = () => {
   const [userDetails, setUserDetails] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const isRefreshing = useRef(false);
 
   /**
    * function to decode the access token and store the id, username and role in the respective state
@@ -119,92 +120,68 @@ const useAuth = () => {
     },
   });
 
-  let isRefreshing = false;
-  let refreshSubscribers: ((token: string) => void)[] = [];
-
-  function subscribeTokenRefresh(cb: (token: string) => void) {
-    refreshSubscribers.push(cb);
-  }
-
-  function onRrefreshed(token: string) {
-    refreshSubscribers.forEach((cb) => cb(token));
-    refreshSubscribers = [];
-  }
-
   /**
    * use mutation hook for calling the refresh token api
    */
 
-  const { mutate: mutateRefreshToken, isPending: isFetchingAccessToken } =
-    useMutation({
-      mutationFn: refreshToken,
-      onSuccess: (data: Record<string, any>) => {
-        const tokenDetails = data?.data?.data;
-        axios.defaults.headers.common.Authorization = `Bearer ${tokenDetails?.accessToken}`;
-        setStoreAccessToken(tokenDetails?.accessToken);
-        setStorageValue(tokenDetails?.accessToken, tokenDetails?.refreshToken);
-        queryClient.invalidateQueries();
-      },
-      onError: (error: any) => {
-        const errorMessage = error?.response?.data?.message;
-        handleErrorCodes(errorMessage);
-      },
-    });
+  const { mutate: mutateRefreshToken } = useMutation({
+    mutationFn: refreshToken,
+    onSuccess: (data: Record<string, any>) => {
+      const tokenDetails = data?.data?.data;
+      axios.defaults.headers.common.Authorization = `Bearer ${tokenDetails?.accessToken}`;
+      setStorageValue(
+        tokenDetails?.accessToken,
+        getStorageValue("refresh_token")
+      );
+      setStoreAccessToken(tokenDetails?.accessToken);
+      retryQueuedRequests(tokenDetails?.accessToken);
+      isRefreshing.current = false;
+    },
+    onError: (error: any) => {
+      isRefreshing.current = false;
+      const errorMessage = error?.response?.data?.message;
+      handleErrorCodes(errorMessage);
+    },
+  });
+
+  // request queue and refresh state
+  const requestQueue = useRef<
+    Array<{
+      resolve: (value: any) => void;
+      reject: (reason?: any) => void;
+      config: AxiosRequestConfig;
+    }>
+  >([]).current;
 
   axios.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error: AxiosError) => {
-      const status = error.response?.status;
+      console.log(error.response?.data, "error response");
+      const status = (error.response?.data as { statusCode?: number })
+        ?.statusCode;
+      const errorMessage = (error.response?.data as { message?: string })
+        ?.message;
+      const originalRequest = error.config as AxiosRequestConfig;
 
-      if (status === 401) {
-        const refreshToken = getStorageValue("refresh_token");
+      if (status === 401 && errorMessage === "Invalid access token") {
+        if (!isRefreshing.current) {
+          isRefreshing.current = true;
+          const refreshToken = getStorageValue("refresh_token");
 
-        if (!isRefreshing) {
-          isRefreshing = true;
+          if (!refreshToken) {
+            clearData();
+            navigate("/");
+            return Promise.reject(error);
+          }
 
-          return new Promise((resolve, reject) => {
-            mutateRefreshToken(refreshToken, {
-              onSuccess: (data: Record<string, any>) => {
-                const tokenDetails = data?.data?.data;
-
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenDetails?.accessToken}`;
-                setStoreAccessToken(tokenDetails?.accessToken);
-                setStorageValue(
-                  tokenDetails?.accessToken,
-                  tokenDetails?.refreshToken
-                );
-                queryClient.invalidateQueries();
-
-                onRrefreshed(tokenDetails?.accessToken);
-                isRefreshing = false;
-
-                // Retry the original request
-                const originalRequest = error.config as AxiosRequestConfig;
-                originalRequest.headers = {
-                  ...originalRequest.headers,
-                  Authorization: `Bearer ${tokenDetails?.accessToken}`,
-                };
-                resolve(axios(originalRequest));
-              },
-              onError: (refreshError: any) => {
-                const errorMessage = refreshError?.response?.data?.message;
-                handleErrorCodes(errorMessage);
-                isRefreshing = false;
-                reject(refreshError);
-              },
-            });
-          });
+          mutateRefreshToken(refreshToken);
         }
 
-        // Already refreshing: queue the request
-        return new Promise((resolve) => {
-          subscribeTokenRefresh((newToken: string) => {
-            const originalRequest = error.config as AxiosRequestConfig;
-            originalRequest.headers = {
-              ...originalRequest.headers,
-              Authorization: `Bearer ${newToken}`,
-            };
-            resolve(axios(originalRequest));
+        return new Promise((resolve, reject) => {
+          requestQueue.push({
+            resolve,
+            reject,
+            config: originalRequest,
           });
         });
       }
@@ -212,6 +189,20 @@ const useAuth = () => {
       return Promise.reject(error);
     }
   );
+
+  const retryQueuedRequests = (token: string) => {
+    while (requestQueue.length) {
+      const { resolve, config } = requestQueue.shift()!;
+      const retryConfig = {
+        ...config,
+        headers: {
+          ...config.headers,
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      resolve(axios(retryConfig));
+    }
+  };
 
   const userLogout = () => {
     return mutateLogout();
@@ -243,9 +234,6 @@ const useAuth = () => {
     // for logout
     userLogout,
     isUserLoggedOut,
-
-    // for fetching access token
-    isFetchingAccessToken,
   };
 };
 

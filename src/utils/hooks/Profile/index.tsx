@@ -6,6 +6,7 @@ import { useContext, createContext } from "react";
 import {
   fetchUserProfile,
   updateCurrentPassword,
+  fetchUserAddress,
 } from "../../controllers/Profile";
 import { ChildrenPropsI } from "../../../interface";
 import { showSuccessMessage } from "../../utilities/Helper";
@@ -19,6 +20,16 @@ const useProfile = () => {
     useQuery({
       queryKey: ["profileDetails"],
       queryFn: fetchUserProfile,
+      enabled: true,
+      select: (data) => data.data,
+      gcTime: 0,
+    });
+
+  /** use query for fetching the user address details */
+  const useGetUserAddress = () =>
+    useQuery({
+      queryKey: ["userAddress"],
+      queryFn: fetchUserAddress,
       enabled: true,
       select: (data) => data.data,
       gcTime: 0,
@@ -46,6 +57,8 @@ const useProfile = () => {
     // for updating the current user password
     mutateCurrentPassword,
     isPasswordUpdated,
+    // for fetching the user address details
+    useGetUserAddress,
   };
 };
 

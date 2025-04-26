@@ -16,3 +16,9 @@ export const fetchUserProfile = () => {
 export const updateCurrentPassword = (payload: Record<string, string>) => {
   return postApi("users/change-password", payload);
 };
+
+/** get logged in user address */
+
+export const fetchUserAddress = () => {
+  return getApi("ecommerce/addresses");
+};

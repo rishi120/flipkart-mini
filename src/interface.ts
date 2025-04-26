@@ -116,4 +116,7 @@ export interface FilesI {
 export interface NoDataFoundI {
   heading: string;
   description: string;
+  buttonName?: string;
+  handleBtn?: () => void;
+  showButton?: boolean;
 }
