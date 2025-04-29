@@ -2,11 +2,7 @@
 import ProfileTabs from "./ProfileTabs";
 
 const Profile = () => {
-  return (
-    <>
-      <ProfileTabs />
-    </>
-  );
+  return <ProfileTabs />;
 };
 
 export default Profile;

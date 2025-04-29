@@ -70,6 +70,8 @@ export interface CustomModalI {
   maxWidth?: "xs" | "sm" | "md" | "lg" | "xl" | false;
   fullWidth: boolean;
   children: ReactNode;
+  modalHeaderIcon: ReactNode;
+  modalHeaderText: string;
 }
 
 export interface LoaderOverlayI {

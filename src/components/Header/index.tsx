@@ -102,11 +102,9 @@ const Header = () => {
         open={modalOpen}
         maxWidth="xs"
         fullWidth
+        modalHeaderIcon={<ErrorOutlineIcon />}
+        modalHeaderText="Logout Confirmation"
       >
-        <h2>
-          <ErrorOutlineIcon />
-          Logout Confirmation
-        </h2>
         <p>
           Are you sure you want to logout? Logging out means you will no longer
           receive notifications.
@@ -131,6 +129,7 @@ const Header = () => {
             variant="contained"
             color="error2"
             onClick={handleUserLogout}
+            disabled={isUserLoggedOut}
           >
             {isUserLoggedOut ? <Loader type="button" /> : "Logout"}
           </CustomButton>

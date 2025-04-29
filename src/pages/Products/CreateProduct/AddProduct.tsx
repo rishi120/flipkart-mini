@@ -25,17 +25,13 @@ const AddProduct = ({ modalOpen, setModalOpen }: AddProductI) => {
       open={modalOpen}
       maxWidth="md"
       fullWidth
+      modalHeaderIcon={<AddCircleOutlineIcon />}
+      modalHeaderText="Add Product"
     >
       {isPending ? (
         <Loader />
       ) : (
-        <>
-          <h2>
-            <AddCircleOutlineIcon />
-            Add Product
-          </h2>
-          <CreateProductForm handleModalClose={handleModalClose} data={data} />
-        </>
+        <CreateProductForm handleModalClose={handleModalClose} data={data} />
       )}
     </CustomModal>
   );

@@ -16,7 +16,7 @@ const CreateProductForm = ({ handleModalClose, data }: FormI) => {
   const [files, setFiles] = useState<FilesI[]>([]);
   const [options, setOptions] = useState([]);
 
-  const { categories } = data?.data || {};
+  const { categories } = data?.data ?? {};
 
   useEffect(() => {
     const categoryOptions = categories?.map((category: any) => ({

@@ -1,6 +1,6 @@
 /** third party imports */
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useContext, createContext } from "react";
+import { useContext, createContext, useState } from "react";
 
 /** local imports */
 import {
@@ -10,12 +10,12 @@ import {
 } from "../../controllers/Profile";
 import { ChildrenPropsI } from "../../../interface";
 import { showSuccessMessage } from "../../utilities/Helper";
-// import { handleErrorCodes } from "../../utilities/Helper";
 
 const createProfileContext = createContext<any>(null);
 export const useProfileContext = () => useContext(createProfileContext);
 
 const useProfile = () => {
+  const [openModal, setOpenModal] = useState(false);
   const useGetProfileDetails = () =>
     useQuery({
       queryKey: ["profileDetails"],
@@ -41,13 +41,12 @@ const useProfile = () => {
       mutationFn: updateCurrentPassword,
       onSuccess: (data) => {
         console.log(data, "data");
-        const { message, statusCode } = data?.data;
+        const { message, statusCode } = data?.data ?? {};
         showSuccessMessage(message, statusCode);
       },
       onError: (error: Record<string, any>) => {
         const errorObj = error?.response?.data;
         console.log(errorObj, "errorObj");
-        // handleErrorCodes(errorObj.message);
       },
     });
 
@@ -59,6 +58,10 @@ const useProfile = () => {
     isPasswordUpdated,
     // for fetching the user address details
     useGetUserAddress,
+
+    // for opening the modal
+    openModal,
+    setOpenModal,
   };
 };
 

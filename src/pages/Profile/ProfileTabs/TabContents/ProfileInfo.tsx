@@ -1,17 +1,15 @@
 /** third party imports */
 import { useState } from "react";
-import { Stack, Divider } from "@mui/material";
+import { Stack, Divider, Grid } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { Grid } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 
 /** local imports */
-import { formFieldRegex } from "../../../../utils/utilities/Helper";
+import { formFieldRegex, formatDate } from "../../../../utils/utilities/Helper";
 import { ProfileFormInputI } from "../../../../interface";
 import TextInput from "../../../../components/TextInput/TextInput";
 import { useProfileContext } from "../../../../utils/hooks";
-import { formatDate } from "../../../../utils/utilities/Helper";
 import styles from "../../Profile.module.scss";
 import CustomButton from "../../../../components/Button";
 import Loader from "../../../../components/Loader";
