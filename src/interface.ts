@@ -122,3 +122,12 @@ export interface NoDataFoundI {
   handleBtn?: () => void;
   showButton?: boolean;
 }
+
+export interface AddAddressFormInputI {
+  addressLine1: string;
+  addressLine2: string;
+  country: string;
+  city: string;
+  state: string;
+  pincode: string;
+}

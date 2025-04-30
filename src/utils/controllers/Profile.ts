@@ -22,3 +22,12 @@ export const updateCurrentPassword = (payload: Record<string, string>) => {
 export const fetchUserAddress = () => {
   return getApi("ecommerce/addresses");
 };
+
+/**
+ * add new address
+ * @param payload address details
+ * @returns api endpoint
+ */
+export const addNewAddress = (payload: Record<string, string>) => {
+  return postApi("ecommerce/addresses", payload);
+};

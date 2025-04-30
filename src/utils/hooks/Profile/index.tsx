@@ -1,5 +1,5 @@
 /** third party imports */
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext, createContext, useState } from "react";
 
 /** local imports */
@@ -7,6 +7,7 @@ import {
   fetchUserProfile,
   updateCurrentPassword,
   fetchUserAddress,
+  addNewAddress,
 } from "../../controllers/Profile";
 import { ChildrenPropsI } from "../../../interface";
 import { showSuccessMessage } from "../../utilities/Helper";
@@ -24,6 +25,8 @@ const useProfile = () => {
       select: (data) => data.data,
       gcTime: 0,
     });
+
+  const queryClient = useQueryClient();
 
   /** use query for fetching the user address details */
   const useGetUserAddress = () =>
@@ -50,6 +53,23 @@ const useProfile = () => {
       },
     });
 
+  /** use mutation for adding new address */
+  const { mutate: mutateAddNewAddress, isPending: isAddressAdded } =
+    useMutation({
+      mutationFn: addNewAddress,
+      onSuccess: (data) => {
+        console.log(data, "data");
+        const { message, statusCode } = data?.data ?? {};
+        setOpenModal(false);
+        showSuccessMessage(message, statusCode);
+        queryClient.refetchQueries({ queryKey: ["userAddress"] });
+      },
+      onError: (error: Record<string, any>) => {
+        const errorObj = error?.response?.data;
+        console.log(errorObj, "errorObj");
+      },
+    });
+
   return {
     // for fetching the current user profile details
     useGetProfileDetails,
@@ -62,6 +82,10 @@ const useProfile = () => {
     // for opening the modal
     openModal,
     setOpenModal,
+
+    // for adding new address
+    mutateAddNewAddress,
+    isAddressAdded,
   };
 };
 

@@ -1,5 +1,8 @@
 /** third party imports */
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { Divider, IconButton, Stack } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditSquareIcon from "@mui/icons-material/EditSquare";
 
 /** local imports */
 
@@ -9,6 +12,7 @@ import styles from "../../Profile.module.scss";
 import NoDataFound from "../../../../components/NoDataFound";
 import CustomModal from "../../../../components/Modal";
 import ModalContent from "./ModalContent";
+import CustomButton from "../../../../components/Button";
 
 const ManageAddress = () => {
   const { useGetUserAddress, openModal, setOpenModal } = useProfileContext();
@@ -31,7 +35,7 @@ const ManageAddress = () => {
           <Loader type="table" />
         ) : (
           <div className={styles.cardLayout}>
-            {data?.data?.addresses?.length === 0 && (
+            {data?.data?.addresses?.length === 0 ? (
               <div className={styles.noDataFound}>
                 <NoDataFound
                   heading="No Address Found"
@@ -41,20 +45,53 @@ const ManageAddress = () => {
                   showButton={true}
                 />
               </div>
+            ) : (
+              <div className={styles.addressContainer}>
+                {data?.data?.addresses?.map((address: any) => (
+                  <>
+                    <div key={address._id} className={styles.addressCard}>
+                      <p>{address.addressLine1}</p>
+                      <p>{address.addressLine2}</p>
+                      <p>{address.country}</p>
+                      <p>{address.street}</p>
+                      <p>{address.city}</p>
+                      <p>{address.state}</p>
+                      <p>{address.pincode}</p>
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        position="absolute"
+                        right="20px"
+                        top="20px"
+                      >
+                        <IconButton>
+                          <DeleteIcon color="error" />
+                        </IconButton>
+                        <IconButton onClick={handleOpenModal}>
+                          <EditSquareIcon color="secondary" />
+                        </IconButton>
+                      </Stack>
+                    </div>
+                    {data?.data?.addresses?.length > 1 && <Divider flexItem />}
+                  </>
+                ))}
+                <Divider flexItem />
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  justifyContent="flex-end"
+                  paddingTop={2}
+                >
+                  <CustomButton
+                    variant="contained"
+                    color="primary2"
+                    onClick={handleOpenModal}
+                  >
+                    Add New Address
+                  </CustomButton>
+                </Stack>
+              </div>
             )}
-            <div className={styles.addressContainer}>
-              {data?.data?.addresses?.map((address: any) => (
-                <div key={address.id} className={styles.addressCard}>
-                  <p>{address.addressLine1}</p>
-                  <p>{address.addressLine2}</p>
-                  <p>{address.country}</p>
-                  <p>{address.street}</p>
-                  <p>{address.city}</p>
-                  <p>{address.state}</p>
-                  <p>{address.pincode}</p>
-                </div>
-              ))}
-            </div>
           </div>
         )}
       </div>
