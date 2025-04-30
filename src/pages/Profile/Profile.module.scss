@@ -1,0 +1,72 @@
+@use "../../assets/Font/Font.scss";
+@use "../../assets/Variables/Variables.scss";
+
+.cardLayout {
+    padding: 0 0 30px 0;
+
+    .cardContentWrapper {
+        width: 60vw;
+        padding: 30px;
+        position: relative;
+
+        img {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            top: 20px;
+            object-fit: cover;
+            right: 20px;
+        }
+
+        .profileContent {
+            padding-bottom: 30px;
+
+            h1 {
+                font-family: Font.$Montserrat;
+                text-transform: capitalize;
+                margin: 0;
+            }
+
+            p {
+                font-family: Font.$Montserrat;
+                font-size: 15px;
+                margin: 5px 0;
+
+                span {
+                    font-weight: 600;
+                }
+
+                &:last-child {
+                    margin-bottom: 10px;
+                }
+            }
+        }
+
+        .passwordWrapper {
+            h3 {
+                font-family: Font.$Montserrat;
+            }
+        }
+    }
+
+    .addressContainer {
+        padding-top: 10px;
+        width: 50%;
+        min-width: 400px;
+
+        .addressCard {
+            padding: 20px;
+            margin-bottom: 10px;
+            width: 100%;
+            position: relative;
+
+            p {
+                font-family: Font.$Montserrat;
+                font-size: 13px;
+                text-align: justify;
+                line-height: 20px;
+            }
+        }
+    }
+}
