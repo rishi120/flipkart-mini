@@ -13,9 +13,18 @@ import NoDataFound from "../../../../components/NoDataFound";
 import CustomModal from "../../../../components/Modal";
 import ModalContent from "./ModalContent";
 import CustomButton from "../../../../components/Button";
+import DeleteModal from "../../../../components/Modal/Delete";
 
 const ManageAddress = () => {
-  const { useGetUserAddress, openModal, setOpenModal } = useProfileContext();
+  const {
+    useGetUserAddress,
+    openModal,
+    setOpenModal,
+    setOpenAddressDeleteModal,
+    openAddressDeleteModal,
+    mutateDeleteAddress,
+    isAddressDeleted,
+  } = useProfileContext();
   const { data, isPending: isUserAddressLoading } = useGetUserAddress();
 
   console.log(data, "data");
@@ -26,6 +35,18 @@ const ManageAddress = () => {
 
   const handleOpenModal = () => {
     setOpenModal(true);
+  };
+
+  const handleAddressDelete = (addressId: string) => {
+    setOpenAddressDeleteModal(addressId);
+  };
+
+  const handleAddressDeleteModal = () => {
+    mutateDeleteAddress(openAddressDeleteModal);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setOpenAddressDeleteModal(false);
   };
 
   return (
@@ -64,7 +85,9 @@ const ManageAddress = () => {
                         right="20px"
                         top="20px"
                       >
-                        <IconButton>
+                        <IconButton
+                          onClick={() => handleAddressDelete(address._id)}
+                        >
                           <DeleteIcon color="error" />
                         </IconButton>
                         <IconButton onClick={handleOpenModal}>
@@ -105,6 +128,13 @@ const ManageAddress = () => {
       >
         <ModalContent handleClose={handleModalClose} />
       </CustomModal>
+      <DeleteModal
+        open={openAddressDeleteModal}
+        onClose={handleCloseDeleteModal}
+        isApiLoading={isAddressDeleted}
+        handleDelete={handleAddressDeleteModal}
+        primaryText="Are you sure you want to remove?  The selected address will be permanently removed."
+      />
     </>
   );
 };

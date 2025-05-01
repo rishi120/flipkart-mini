@@ -8,6 +8,7 @@ import {
   updateCurrentPassword,
   fetchUserAddress,
   addNewAddress,
+  deleteAddress,
 } from "../../controllers/Profile";
 import { ChildrenPropsI } from "../../../interface";
 import { showSuccessMessage } from "../../utilities/Helper";
@@ -17,6 +18,7 @@ export const useProfileContext = () => useContext(createProfileContext);
 
 const useProfile = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [openAddressDeleteModal, setOpenAddressDeleteModal] = useState(false);
   const useGetProfileDetails = () =>
     useQuery({
       queryKey: ["profileDetails"],
@@ -70,6 +72,25 @@ const useProfile = () => {
       },
     });
 
+  /** use mutation for deleting the address */
+  const { mutate: mutateDeleteAddress, isPending: isAddressDeleted } =
+    useMutation({
+      mutationFn: (addressId: string) => {
+        return deleteAddress(addressId);
+      },
+      onSuccess: (data) => {
+        console.log(data, "data");
+        const { message, statusCode } = data?.data ?? {};
+        setOpenAddressDeleteModal(false);
+        showSuccessMessage(message, statusCode);
+        queryClient.refetchQueries({ queryKey: ["userAddress"] });
+      },
+      onError: (error: Record<string, any>) => {
+        const errorObj = error?.response?.data;
+        console.log(errorObj, "errorObj");
+      },
+    });
+
   return {
     // for fetching the current user profile details
     useGetProfileDetails,
@@ -86,6 +107,14 @@ const useProfile = () => {
     // for adding new address
     mutateAddNewAddress,
     isAddressAdded,
+
+    // for opening the address delete modal
+    setOpenAddressDeleteModal,
+    openAddressDeleteModal,
+
+    // for deleting the address
+    mutateDeleteAddress,
+    isAddressDeleted,
   };
 };
 

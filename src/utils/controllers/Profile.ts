@@ -1,4 +1,4 @@
-import { getApi, postApi } from "../apis";
+import { deleteApi, getApi, postApi } from "../apis";
 
 /**
  * fetch the logged in user profile details
@@ -30,4 +30,13 @@ export const fetchUserAddress = () => {
  */
 export const addNewAddress = (payload: Record<string, string>) => {
   return postApi("ecommerce/addresses", payload);
+};
+
+/**
+ * delete address
+ * @param addressId address id
+ * @returns api endpoint
+ */
+export const deleteAddress = (addressId: string) => {
+  return deleteApi(`ecommerce/addresses/${addressId}`);
 };
