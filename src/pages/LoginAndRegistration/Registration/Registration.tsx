@@ -154,9 +154,6 @@ export const Registration = () => {
               // isDisabled={isReschedule}
               error={!!error}
               helperText={error ? error.message : null}
-              onChange={(e) => {
-                field.onChange(e);
-              }}
             />
           )}
         />

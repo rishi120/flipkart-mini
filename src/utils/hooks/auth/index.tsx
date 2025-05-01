@@ -1,12 +1,13 @@
 /** third party imports */
-import { useContext, createContext, useState, useEffect } from "react";
-import axios from "axios";
+import { useContext, createContext, useState, useEffect, useRef } from "react";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { jwtDecode, InvalidTokenError, JwtPayload } from "jwt-decode";
 /** local imports */
 import { ChildrenPropsI } from "../../../interface";
 import { Login, Registration, Logout } from "../../controllers/Auth";
+import { refreshToken } from "../../controllers/RefreshToken";
 import { handleErrorCodes, showSuccessMessage } from "../../utilities/Helper";
 import {
   getStorageValue,
@@ -29,6 +30,7 @@ const useAuth = () => {
   const [userDetails, setUserDetails] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const isRefreshing = useRef(false);
 
   /**
    * function to decode the access token and store the id, username and role in the respective state
@@ -72,19 +74,15 @@ const useAuth = () => {
     mutationFn: Login,
     onSuccess: (data) => {
       const tokenDetails = data?.data?.data;
-      const decodeAccessToken = jwtDecode(tokenDetails?.accessToken);
       localStorage.setItem("userDetails", JSON.stringify(tokenDetails?.user));
       axios.defaults.headers.common.Authorization = `Bearer ${tokenDetails?.accessToken}`;
       setStoreAccessToken(tokenDetails?.accessToken);
-      setStorageValue(
-        tokenDetails?.accessToken,
-        tokenDetails?.refreshToken,
-        decodeAccessToken?.exp || 0
-      );
+      setStorageValue(tokenDetails?.accessToken, tokenDetails?.refreshToken);
       showSuccessMessage(data?.data?.message, "login");
       navigate("/products");
     },
     onError: (error: Record<string, any>) => {
+      console.log(error, "error");
       const errorMessage = error?.response?.data?.message;
       handleErrorCodes(errorMessage);
     },
@@ -122,25 +120,89 @@ const useAuth = () => {
     },
   });
 
-  axios.interceptors.response.use(
-    function (response) {
-      // Any status code that lie within the range of 2xx cause this function to trigger
-      // Do something with response data
-      return response;
+  /**
+   * use mutation hook for calling the refresh token api
+   */
+
+  const { mutate: mutateRefreshToken } = useMutation({
+    mutationFn: refreshToken,
+    onSuccess: (data: Record<string, any>) => {
+      const tokenDetails = data?.data?.data;
+      axios.defaults.headers.common.Authorization = `Bearer ${tokenDetails?.accessToken}`;
+      setStorageValue(
+        tokenDetails?.accessToken,
+        getStorageValue("refresh_token")
+      );
+      setStoreAccessToken(tokenDetails?.accessToken);
+      retryQueuedRequests(tokenDetails?.accessToken);
+      isRefreshing.current = false;
     },
-    function (error) {
-      console.log(error, "==== error");
-      if (error.response.data.statusCode === 401) {
-        clearData();
-        navigate("/");
-        queryClient.clear();
-        axios.defaults.headers.common.Authorization = "";
+    onError: (error: any) => {
+      isRefreshing.current = false;
+      const errorMessage = error?.response?.data?.message;
+      handleErrorCodes(errorMessage);
+    },
+  });
+
+  // request queue and refresh state
+  const requestQueue = useRef<
+    Array<{
+      resolve: (value: any) => void;
+      reject: (reason?: any) => void;
+      config: AxiosRequestConfig;
+    }>
+  >([]).current;
+
+  axios.interceptors.response.use(
+    (response: AxiosResponse) => response,
+    async (error: AxiosError) => {
+      console.log(error.response?.data, "error response");
+      const status = (error.response?.data as { statusCode?: number })
+        ?.statusCode;
+      const errorMessage = (error.response?.data as { message?: string })
+        ?.message;
+      const originalRequest = error.config as AxiosRequestConfig;
+
+      if (status === 401 && errorMessage === "Invalid access token") {
+        if (!isRefreshing.current) {
+          isRefreshing.current = true;
+          const refreshToken = getStorageValue("refresh_token");
+
+          if (!refreshToken) {
+            clearData();
+            navigate("/");
+            return Promise.reject(error);
+          }
+
+          mutateRefreshToken(refreshToken);
+        }
+
+        return new Promise((resolve, reject) => {
+          requestQueue.push({
+            resolve,
+            reject,
+            config: originalRequest,
+          });
+        });
       }
-      // Any status codes that falls outside the range of 2xx cause this function to trigger
-      // Do something with response error
+
       return Promise.reject(error);
     }
   );
+
+  const retryQueuedRequests = (token: string) => {
+    while (requestQueue.length) {
+      const { resolve, config } = requestQueue.shift()!;
+      const retryConfig = {
+        ...config,
+        headers: {
+          ...config.headers,
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      resolve(axios(retryConfig));
+    }
+  };
 
   const userLogout = () => {
     return mutateLogout();

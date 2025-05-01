@@ -4,9 +4,19 @@
 .moduleWrapper {
     padding-top: 100px;
     width: 100%;
+    height: calc(100vh - 70px);
+    box-sizing: border-box;
 
-    h1 {
-        font-family: Font.$Montserrat;
-        font-size: 30px;
+    .moduleToolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+
+        h1 {
+            font-family: Font.$Montserrat;
+            font-size: 30px;
+            margin: 0;
+        }
     }
 }
