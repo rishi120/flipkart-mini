@@ -1,85 +1,77 @@
 /** third party imports */
 import { useForm, Controller } from "react-hook-form";
-import { Grid } from "@mui/material";
-import { Stack } from "@mui/material";
-import { useState } from "react";
+import { Grid, Stack } from "@mui/material";
+import { useState, useEffect } from "react";
 /** local imports */
-import { ProductFormInputI, FilesI } from "../../../interface";
+import { ProductFormInputI, FilesI, FormI } from "../../../interface";
 import TextInput from "../../../components/TextInput/TextInput";
 import CustomButton from "../../../components/Button";
-import { FormI } from "../../../interface";
 import SingleFileUpload from "./FileUpload/FileUpload";
+import { useProductsContext } from "../../../utils/hooks";
+import Loader from "../../../components/Loader";
+import { SearchableDropDown } from "../../../components/SearchableDropdown";
 
-const CreateProductForm = ({ handleModalClose }: FormI) => {
-  const { handleSubmit, control } = useForm<ProductFormInputI>();
+const CreateProductForm = ({ handleModalClose, data }: FormI) => {
+  const { handleSubmit, control, reset } = useForm<ProductFormInputI>();
   const [files, setFiles] = useState<FilesI[]>([]);
+  const [options, setOptions] = useState([]);
+
+  const { categories } = data?.data || {};
+
+  useEffect(() => {
+    const categoryOptions = categories?.map((category: any) => ({
+      label: category.name,
+      value: category._id,
+      labelId: category._id,
+    }));
+    setOptions(categoryOptions);
+  }, [categories]);
+
+  const { handleCreateProducts, isCreatingProduct } = useProductsContext();
 
   const handleFormSubmit = (data: any) => {
-    // const requestPayload = {
-    //   email: data.email,
-    //   password: data.password,
-    //   username: data.userName,
-    //   role: data.roles.label.toUpperCase(),
-    // };
-    console.log(files, "==== files");
-    console.log(data, "==== data");
+    const formData = new FormData();
+    formData.append("category", data.category.value);
+    formData.append("description", data.description);
+    formData.append("name", data.name);
+    formData.append("price", data.price);
+    formData.append("stock", data.stock);
 
-    // handleRegistration(requestPayload);
+    if (files.length > 0 && files[0] instanceof File) {
+      formData.append("mainImage", files[0]);
+    }
 
-    // reset({
-    //   email: "",
-    //   password: "",
-    //   userName: "",
-    //   roles: [],
-    // });
+    handleCreateProducts(formData);
+
+    reset({
+      category: "",
+      description: "",
+      name: "",
+      price: "",
+      stock: "",
+    });
+    setFiles([]);
   };
-
-  console.log(files, "==== files");
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Grid container spacing={2}>
         <Grid size={6}>
           <Controller
-            control={control}
             name="category"
+            control={control}
             rules={{
               required: "Category is required",
             }}
             render={({ field, fieldState: { error } }) => (
-              <TextInput
+              <SearchableDropDown
                 {...field}
-                error={!!error}
-                placeholder="Enter Category Id"
-                helperText={error ? error.message : null}
-                type="text"
-                variant="outlined"
-                //   className={styles.textField}
+                label="Select Category"
+                options={options}
                 required
-                label="Category ID"
-              />
-            )}
-          />
-        </Grid>
-        <Grid size={6}>
-          <Controller
-            control={control}
-            name="description"
-            rules={{
-              required: "Description is required",
-            }}
-            render={({ field, fieldState: { error } }) => (
-              <TextInput
-                {...field}
-                name="description"
                 error={!!error}
-                placeholder="Enter Description"
                 helperText={error ? error.message : null}
-                type="text"
-                variant="outlined"
-                //   className={styles.textField}
-                required
-                label="Description"
+                isSearchable={true}
               />
             )}
           />
@@ -153,6 +145,31 @@ const CreateProductForm = ({ handleModalClose }: FormI) => {
             )}
           />
         </Grid>
+        <Grid size={12}>
+          <Controller
+            control={control}
+            name="description"
+            rules={{
+              required: "Description is required",
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <TextInput
+                {...field}
+                name="description"
+                error={!!error}
+                placeholder="Enter Description"
+                helperText={error ? error.message : null}
+                type="text"
+                variant="outlined"
+                //   className={styles.textField}
+                required
+                label="Description"
+                multiline
+                rows={4}
+              />
+            )}
+          />
+        </Grid>
 
         <Stack
           direction="row"
@@ -168,11 +185,12 @@ const CreateProductForm = ({ handleModalClose }: FormI) => {
             textColor="primary2"
             // disabled={isUserLoggedOut}
             onClick={handleModalClose}
+            disabled={isCreatingProduct}
           >
             Cancel
           </CustomButton>
           <CustomButton variant="contained" type="submit" color="primary2">
-            Add
+            {isCreatingProduct ? <Loader type="button" /> : "Add"}
           </CustomButton>
         </Stack>
       </Grid>

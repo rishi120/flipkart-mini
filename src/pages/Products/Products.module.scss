@@ -7,10 +7,12 @@
     border: 1px solid Variables.$nuetral3;
     height: 450px;
     border-radius: 5px;
+    position: relative;
 
     h2 {
         font-family: Font.$Montserrat;
         font-size: 18px;
+        text-transform: capitalize;
     }
 
     p {
@@ -22,6 +24,14 @@
 
     img {
         width: 100%;
+    }
+
+    .productToolBar {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        border-top: 1px solid Variables.$nuetral3;
     }
 }
 

@@ -46,6 +46,18 @@
             input {
                 padding: 0 0 1px;
 
+                &::placeholder {
+                    font-family: font.$Montserrat;
+                    font-size: 12px;
+                }
+
+            }
+
+            textArea {
+                &::placeholder {
+                    font-family: font.$Montserrat;
+                    font-size: 12px;
+                }
             }
 
             &:focus-within {
