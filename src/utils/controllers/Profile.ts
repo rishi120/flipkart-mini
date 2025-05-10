@@ -1,4 +1,4 @@
-import { getApi } from "../apis";
+import { getApi, postApi } from "../apis";
 
 /**
  * fetch the logged in user profile details
@@ -6,5 +6,19 @@ import { getApi } from "../apis";
  */
 
 export const fetchUserProfile = () => {
-  return getApi("ecommerce/profile");
+  return getApi("users/current-user");
+};
+
+/**
+ * update current password
+ */
+
+export const updateCurrentPassword = (payload: Record<string, string>) => {
+  return postApi("users/change-password", payload);
+};
+
+/** get logged in user address */
+
+export const fetchUserAddress = () => {
+  return getApi("ecommerce/addresses");
 };

@@ -1,15 +1,21 @@
 /** third party imports */
-import { useQuery } from "@tanstack/react-query";
-import { useContext, createContext } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useContext, createContext, useState } from "react";
+
 /** local imports */
-import { fetchUserProfile } from "../../controllers/Profile";
+import {
+  fetchUserProfile,
+  updateCurrentPassword,
+  fetchUserAddress,
+} from "../../controllers/Profile";
 import { ChildrenPropsI } from "../../../interface";
-// import { handleErrorCodes } from "../../utilities/Helper";
+import { showSuccessMessage } from "../../utilities/Helper";
 
 const createProfileContext = createContext<any>(null);
 export const useProfileContext = () => useContext(createProfileContext);
 
 const useProfile = () => {
+  const [openModal, setOpenModal] = useState(false);
   const useGetProfileDetails = () =>
     useQuery({
       queryKey: ["profileDetails"],
@@ -19,8 +25,43 @@ const useProfile = () => {
       gcTime: 0,
     });
 
+  /** use query for fetching the user address details */
+  const useGetUserAddress = () =>
+    useQuery({
+      queryKey: ["userAddress"],
+      queryFn: fetchUserAddress,
+      enabled: true,
+      select: (data) => data.data,
+      gcTime: 0,
+    });
+
+  /** use mutation for updating the current user password */
+  const { mutate: mutateCurrentPassword, isPending: isPasswordUpdated } =
+    useMutation({
+      mutationFn: updateCurrentPassword,
+      onSuccess: (data) => {
+        console.log(data, "data");
+        const { message, statusCode } = data?.data ?? {};
+        showSuccessMessage(message, statusCode);
+      },
+      onError: (error: Record<string, any>) => {
+        const errorObj = error?.response?.data;
+        console.log(errorObj, "errorObj");
+      },
+    });
+
   return {
+    // for fetching the current user profile details
     useGetProfileDetails,
+    // for updating the current user password
+    mutateCurrentPassword,
+    isPasswordUpdated,
+    // for fetching the user address details
+    useGetUserAddress,
+
+    // for opening the modal
+    openModal,
+    setOpenModal,
   };
 };
 

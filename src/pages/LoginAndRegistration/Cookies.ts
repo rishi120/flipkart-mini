@@ -8,20 +8,10 @@ const cookies = new Cookies();
  * @param {string} id_token - The ID token.
  * @param {number} expiresIn - The token expiration time in seconds.
  */
-export const setStorageValue = (
-  accessToken: string,
-  refreshToken: string,
-  expiresIn: number
-) => {
-  const expiryTime = new Date();
-  expiryTime.setSeconds(expiryTime.getSeconds() + expiresIn); // Convert expiry seconds to timestamp
-  const refreshTokenExpiry = new Date();
-  refreshTokenExpiry.setSeconds(refreshTokenExpiry.getSeconds() + 60 * 60 * 24);
-
+export const setStorageValue = (accessToken: string, refreshToken: string) => {
   // // Store access token with expiration
   cookies.set("access_token", accessToken, {
     path: "/",
-    expires: expiryTime,
     secure: import.meta.env.DEV, // Ensures it's sent only over HTTPS
     sameSite: "strict",
     httpOnly: false, // Set to true if handling tokens server-side
@@ -32,7 +22,6 @@ export const setStorageValue = (
     path: "/",
     secure: import.meta.env.DEV,
     sameSite: "strict",
-    expires: refreshTokenExpiry,
     httpOnly: false, // Set to true if handling tokens server-side
   });
 };

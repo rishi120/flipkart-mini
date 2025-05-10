@@ -1,5 +1,5 @@
 /** third party imports */
-import { useDropzone, FileWithPath } from "react-dropzone";
+import { useDropzone } from "react-dropzone";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 /** local imports */
@@ -15,17 +15,20 @@ const SingleFileUpload = ({ setFiles, files }: SingleFileUploadI) => {
   const { getRootProps, getInputProps } = useDropzone({
     multiple: false,
     accept: {
-      "jpg/png/jpeg": [],
+      png: [],
+      jpg: [],
+      jpeg: [],
     },
-    onDrop: (acceptedFiles: FileWithPath[]) => {
-      setFiles(
-        acceptedFiles.map((file) => ({
-          file,
-          preview: URL.createObjectURL(file),
-        }))
-      );
+    onDrop: (acceptedFiles) => {
+      const newFiles = acceptedFiles.map((file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        // You can add other data to formData if needed, like preview URL
+        return file;
+      });
+      setFiles((prevFiles) => [...prevFiles, ...newFiles]);
     },
-    onDropRejected: (_rejectedFiles) => {
+    onDropRejected: () => {
       handleErrorCodes("Only images are allowed");
     },
   });
@@ -52,15 +55,16 @@ const SingleFileUpload = ({ setFiles, files }: SingleFileUploadI) => {
       {/* Display uploaded file previews */}
       {files.length > 0 && (
         <>
-          {files.map((fileObj) => (
-            <div key={fileObj.file.name} className={styles.innerIconWrap}>
-              <CheckCircleOutlineIcon />
-              <p>{fileObj.file.name}</p>
-            </div>
-          ))}
+          {files?.map((fileObj) => {
+            return (
+              <div key={fileObj?.name} className={styles.innerIconWrap}>
+                <CheckCircleOutlineIcon />
+                <p>{fileObj?.name}</p>
+              </div>
+            );
+          })}
         </>
       )}
-      {/* {files.length === 0 && <p className={styles.errorText}>dddsddsd</p>} */}
     </div>
   );
 };

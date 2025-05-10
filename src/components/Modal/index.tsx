@@ -11,6 +11,8 @@ const CustomModal = ({
   maxWidth,
   fullWidth,
   children,
+  modalHeaderIcon,
+  modalHeaderText,
 }: CustomModalI) => {
   return (
     <Dialog
@@ -19,7 +21,13 @@ const CustomModal = ({
       maxWidth={maxWidth}
       fullWidth={fullWidth}
     >
-      <div className="modalWrapper">{children}</div>
+      <div className="modalWrapper">
+        <h2>
+          {modalHeaderIcon}
+          {modalHeaderText}
+        </h2>
+        {children}
+      </div>
     </Dialog>
   );
 };

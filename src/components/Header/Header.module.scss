@@ -17,6 +17,27 @@ header .headerWrapper {
     align-items: center;
 }
 
+header .headerWrapper button {
+    position: relative;
+
+    p {
+        position: absolute;
+        top: -5px;
+        font-size: 12px;
+        font-family: Font.$Montserrat;
+        width: 17px;
+        height: 17px;
+        background: #f00;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        right: 0;
+        margin: 0;
+    }
+}
+
 header .headerWrapper h1 {
     font-family: Font.$Montserrat;
     font-size: 24px;

@@ -1,5 +1,6 @@
 import CustomToaster from "../../components/CustomToaster";
 import { toast } from "react-toastify";
+import dayjs from "dayjs";
 
 /**
  * Handles error messages and displays them using a custom toast with specific styling
@@ -49,4 +50,10 @@ export const formFieldRegex = {
   password:
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/, // Password must include uppercase, lowercase, number, and special char
   email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, // Standard email format validation
+};
+
+/** function for formatting the date and time */
+
+export const formatDate = (value: string) => {
+  return dayjs(value).format("DD/MM/YYYY hh:mm A");
 };
